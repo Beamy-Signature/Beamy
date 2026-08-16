@@ -10,7 +10,7 @@ import type {
   Testimonial,
 } from "@/lib/types";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { hydrateProduct, readStore } from "@/lib/data/local-store";
 import * as seed from "@/lib/data/seed";
 
@@ -43,13 +43,13 @@ function mapProduct(row: ProductRow): ProductWithRelations {
   };
 }
 
-async function supabase() {
-  return createClient();
+function supabase() {
+  return createPublicClient();
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   if (!isSupabaseConfigured()) return (await readStore()).settings;
-  const client = await supabase();
+  const client = supabase();
   const { data, error } = await client.from("site_settings").select("*").single();
   if (error || !data) return seed.settings;
   return data as SiteSettings;
@@ -61,7 +61,7 @@ export async function getHeroImages(): Promise<HeroImage[]> {
       .filter((image) => image.published)
       .sort((a, b) => a.sort_order - b.sort_order);
   }
-  const client = await supabase();
+  const client = supabase();
   const { data, error } = await client
     .from("hero_images")
     .select("*")
@@ -83,7 +83,7 @@ export async function getAdminHeroImages(): Promise<HeroImage[]> {
   if (!isSupabaseConfigured()) {
     return [...(await readStore()).heroImages].sort((a, b) => a.sort_order - b.sort_order);
   }
-  const client = await supabase();
+  const client = supabase();
   const { data, error } = await client.from("hero_images").select("*").order("sort_order");
   if (error || !data) return [];
   return data as HeroImage[];
@@ -95,7 +95,7 @@ export async function getCategories(gender?: "men" | "women"): Promise<Category[
       .filter((category) => (gender ? category.gender === gender : true))
       .sort((a, b) => a.sort_order - b.sort_order);
   }
-  const client = await supabase();
+  const client = supabase();
   let query = client.from("categories").select("*").order("sort_order");
   if (gender) query = query.eq("gender", gender);
   const { data, error } = await query;
@@ -111,7 +111,7 @@ export async function getCollections(options?: {
     const list = published ? publishedOnly((await readStore()).collections) : (await readStore()).collections;
     return [...list].sort((a, b) => a.sort_order - b.sort_order);
   }
-  const client = await supabase();
+  const client = supabase();
   let query = client.from("collections").select("*").order("sort_order");
   if (published) query = query.eq("published", true);
   const { data, error } = await query;
@@ -130,7 +130,7 @@ export async function getCollectionBySlug(
       ) ?? null
     );
   }
-  const client = await supabase();
+  const client = supabase();
   const { data, error } = await client
     .from("collections")
     .select("*")
@@ -172,7 +172,7 @@ export async function getProducts(options?: {
       .sort((a, b) => a.sort_order - b.sort_order);
   }
 
-  const client = await supabase();
+  const client = supabase();
   let query = client.from("products").select(productSelect).order("sort_order");
   if (published) query = query.eq("published", true);
   if (options?.gender) query = query.eq("gender", options.gender);
@@ -205,7 +205,7 @@ export async function getProductBySlug(
     return hydrateProduct(product, store);
   }
 
-  const client = await supabase();
+  const client = supabase();
   let query = client.from("products").select(productSelect).eq("slug", slug);
   if (!options?.includeUnpublished) query = query.eq("published", true);
   const { data, error } = await query.maybeSingle();
@@ -221,7 +221,7 @@ export async function getProductById(
     const product = store.products.find((item) => item.id === id) ?? null;
     return product ? hydrateProduct(product, store) : null;
   }
-  const client = await supabase();
+  const client = supabase();
   const { data, error } = await client
     .from("products")
     .select(productSelect)
@@ -245,7 +245,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
   if (!isSupabaseConfigured()) {
     return publishedOnly((await readStore()).testimonials).sort((a, b) => a.sort_order - b.sort_order);
   }
-  const client = await supabase();
+  const client = supabase();
   const { data, error } = await client
     .from("testimonials")
     .select("*")
@@ -259,7 +259,7 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
   if (!isSupabaseConfigured()) {
     return publishedOnly((await readStore()).galleryImages).sort((a, b) => a.sort_order - b.sort_order);
   }
-  const client = await supabase();
+  const client = supabase();
   const { data, error } = await client
     .from("gallery_images")
     .select("*")
@@ -285,7 +285,7 @@ export async function getAdminTestimonials(): Promise<Testimonial[]> {
   if (!isSupabaseConfigured()) {
     return [...(await readStore()).testimonials].sort((a, b) => a.sort_order - b.sort_order);
   }
-  const client = await supabase();
+  const client = supabase();
   const { data, error } = await client
     .from("testimonials")
     .select("*")
@@ -298,7 +298,7 @@ export async function getAdminGalleryImages(): Promise<GalleryImage[]> {
   if (!isSupabaseConfigured()) {
     return [...(await readStore()).galleryImages].sort((a, b) => a.sort_order - b.sort_order);
   }
-  const client = await supabase();
+  const client = supabase();
   const { data, error } = await client
     .from("gallery_images")
     .select("*")

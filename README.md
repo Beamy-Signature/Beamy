@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BEAMY
 
-## Getting Started
+BEAMY is a Lagos unisex fashion house for bespoke and made-to-measure clothing. This repository holds the public catalogue website and the private BEAMY Catalogue used to keep designs, collections and homepage images up to date.
 
-First, run the development server:
+Orders are completed on WhatsApp. There is no card checkout.
+
+## What is included
+
+- A public website for collections, individual designs, about, contact and a bag that opens WhatsApp
+- A private catalogue at `/admin` for adding designs, photos, collections, categories, testimonials and site details
+- Optional split builds, so the website and the catalogue can be deployed as two Vercel projects (for example `beamy.fashion` and `catalogue.beamy.fashion`)
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Website: [http://localhost:3000](http://localhost:3000)
+- Catalogue: [http://localhost:3000/admin](http://localhost:3000/admin)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To run them separately:
 
-## Learn More
+```bash
+npm run dev:web      # website only, port 3000
+npm run dev:admin    # catalogue only, port 3001
+```
 
-To learn more about Next.js, take a look at the following resources:
+Copy `.env.example` to `.env.local` when you are ready to connect Supabase. Until those keys are set, the app uses a local mock catalogue so you can design and review the site.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Catalogue
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The catalogue is written for a non-technical owner. Language stays simple: **Add New Design**, **All Designs**, **Homepage images**.
 
-## Deploy on Vercel
+Without Supabase, changes are stored on this computer only. Before going live, create a Supabase project, run `supabase/schema.sql` and `supabase/seed.sql`, add an Auth user, and set the environment variables. Full steps are in [DEPLOY.md](./DEPLOY.md).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [DEPLOY.md](./DEPLOY.md) for Supabase, Vercel, custom domains and the optional website-plus-subdomain catalogue setup.

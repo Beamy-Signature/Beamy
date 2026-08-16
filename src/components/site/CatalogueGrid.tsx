@@ -37,8 +37,8 @@ export function CatalogueGrid({
       </div>
       {filtered.length === 0 ? (
         <EmptyState
-          title="Nothing here yet"
-          body="This category is waiting for new BEAMY pieces."
+          title="Nothing here just yet"
+          body="This corner of the collection is still being dressed. Please look through All, or come back shortly."
         />
       ) : (
         <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">

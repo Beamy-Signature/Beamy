@@ -53,7 +53,7 @@ export default async function AdminProductsPage({
       </form>
       <div className="mt-8 divide-y divide-line border border-line bg-paper">
         {filtered.length === 0 ? (
-          <p className="p-8 text-muted">No designs match this search.</p>
+          <p className="p-8 text-muted">Nothing matches that search just yet. Try another name, or add a new design.</p>
         ) : (
           filtered.map((product) => (
             <div key={product.id} className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
@@ -86,8 +86,8 @@ export default async function AdminProductsPage({
                 <ConfirmDelete
                   action={deleteProductAction}
                   id={product.id}
-                  title="Delete this design?"
-                  message={`“${product.name}” will be removed from the catalogue. This cannot be undone.`}
+                  title="Remove this design?"
+                  message={`“${product.name}” will leave the catalogue. This cannot be undone, so only continue if you are sure.`}
                 />
               </div>
             </div>

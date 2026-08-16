@@ -41,7 +41,7 @@ export function PhotoUploader({
         const response = await fetch("/api/upload", { method: "POST", body });
         const data = (await response.json()) as { url?: string; error?: string };
         if (!response.ok || !data.url) {
-          throw new Error(data.error || "Could not upload that photo.");
+          throw new Error(data.error || "We couldn’t add that photo just now. Please try again.");
         }
         uploaded.push({ url: data.url, alt: file.name.replace(/\.[^.]+$/, "") });
       }
@@ -51,7 +51,7 @@ export function PhotoUploader({
         return next;
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed.");
+      setError(err instanceof Error ? err.message : "We couldn’t add that photo just now. Please try again.");
     } finally {
       setBusy(false);
     }

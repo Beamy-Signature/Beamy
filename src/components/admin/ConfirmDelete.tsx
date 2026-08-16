@@ -5,7 +5,7 @@ import { useState } from "react";
 export function ConfirmDelete({
   action,
   id,
-  label = "Delete",
+  label = "Remove",
   title,
   message,
 }: {
@@ -29,7 +29,7 @@ export function ConfirmDelete({
             <p className="mt-3 text-sm leading-6 text-muted">{message}</p>
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" className="px-4 py-2 text-sm" onClick={() => setOpen(false)}>
-                Keep it
+                Keep this
               </button>
               <form action={action}>
                 <input type="hidden" name="id" value={id} />

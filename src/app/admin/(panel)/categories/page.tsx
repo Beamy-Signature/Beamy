@@ -70,8 +70,8 @@ function Group({
               <ConfirmDelete
                 action={deleteCategoryAction}
                 id={category.id}
-                title={`Delete ${category.name}?`}
-                message="Designs in this category will stay, but they will no longer be grouped under this name."
+                title={`Remove ${category.name}?`}
+                message="The designs themselves will stay. They will simply no longer sit under this name."
               />
             </div>
           </div>

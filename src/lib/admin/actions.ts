@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { slugify } from "@/lib/slug";
 import { hydrateProduct, readStore, writeStore } from "@/lib/data/local-store";
+import { friendlyAuthError, friendlySaveError } from "@/lib/friendly-error";
 import type {
   Gender,
   HeroImage,
@@ -34,7 +35,7 @@ async function requireSupabaseUser() {
 
 export async function loginAction(formData: FormData) {
   if (!isSupabaseConfigured()) {
-    throw new Error("Connect Supabase to enable login.");
+    throw new Error("The catalogue is still on this computer. Connect Supabase when you are ready to go live.");
   }
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
@@ -42,7 +43,7 @@ export async function loginAction(formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
-    redirect(`/admin/login?error=${encodeURIComponent(error.message)}`);
+    redirect(`/admin/login?error=${encodeURIComponent(friendlyAuthError(error.message))}`);
   }
   redirect(next.startsWith("/admin") ? next : "/admin");
 }
@@ -111,7 +112,7 @@ export async function saveProductAction(formData: FormData) {
   void category;
   void collection;
   const { error } = await supabase.from("products").upsert(row);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(friendlySaveError(error.message));
   await supabase.from("product_images").delete().eq("product_id", product.id);
   if (images.length > 0) {
     const { error: imageError } = await supabase.from("product_images").insert(
@@ -122,7 +123,7 @@ export async function saveProductAction(formData: FormData) {
         sort_order: image.sort_order,
       })),
     );
-    if (imageError) throw new Error(imageError.message);
+    if (imageError) throw new Error(friendlySaveError(imageError.message));
   }
   revalidateCatalogue();
   redirect("/admin/products");
@@ -139,7 +140,7 @@ export async function deleteProductAction(formData: FormData) {
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("products").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(friendlySaveError(error.message));
   revalidateCatalogue();
   redirect("/admin/products");
 }
@@ -149,7 +150,7 @@ export async function toggleProductFlag(formData: FormData) {
   const field = str(formData, "field");
   const value = str(formData, "value") === "true";
   if (field !== "published" && field !== "featured") {
-    throw new Error("Invalid field");
+    throw new Error("That change could not be applied. Please refresh and try again.");
   }
   if (!isSupabaseConfigured()) {
     const store = await readStore();
@@ -162,7 +163,7 @@ export async function toggleProductFlag(formData: FormData) {
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("products").update({ [field]: value }).eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(friendlySaveError(error.message));
   revalidateCatalogue();
 }
 
@@ -196,7 +197,7 @@ export async function saveCollectionAction(formData: FormData) {
 
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("collections").upsert(collection);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(friendlySaveError(error.message));
   revalidateCatalogue();
   redirect("/admin/collections");
 }
@@ -207,7 +208,7 @@ export async function deleteCollectionAction(formData: FormData) {
     const store = await readStore();
     const collection = store.collections.find((item) => item.id === id);
     if (collection && (collection.slug === "men" || collection.slug === "women")) {
-      throw new Error("Men and Women collections cannot be deleted. Unpublish or rename instead.");
+      throw new Error(friendlySaveError("Men and Women collections cannot be deleted."));
     }
     store.collections = store.collections.filter((item) => item.id !== id);
     await writeStore(store);
@@ -217,10 +218,10 @@ export async function deleteCollectionAction(formData: FormData) {
   const supabase = await requireSupabaseUser();
   const { data } = await supabase.from("collections").select("slug").eq("id", id).maybeSingle();
   if (data?.slug === "men" || data?.slug === "women") {
-    throw new Error("Men and Women collections cannot be deleted. Unpublish or rename instead.");
+    throw new Error(friendlySaveError("Men and Women collections cannot be deleted."));
   }
   const { error } = await supabase.from("collections").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(friendlySaveError(error.message));
   revalidateCatalogue();
   redirect("/admin/collections");
 }
@@ -250,7 +251,7 @@ export async function saveCategoryAction(formData: FormData) {
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("categories").upsert(category);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(friendlySaveError(error.message));
   revalidateCatalogue();
   redirect("/admin/categories");
 }
@@ -267,7 +268,7 @@ export async function deleteCategoryAction(formData: FormData) {
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("categories").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(friendlySaveError(error.message));
   revalidateCatalogue();
   redirect("/admin/categories");
 }
@@ -297,7 +298,7 @@ export async function saveTestimonialAction(formData: FormData) {
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("testimonials").upsert(testimonial);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(friendlySaveError(error.message));
   revalidateCatalogue();
   redirect("/admin/testimonials");
 }
@@ -313,7 +314,7 @@ export async function deleteTestimonialAction(formData: FormData) {
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("testimonials").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(friendlySaveError(error.message));
   revalidateCatalogue();
   redirect("/admin/testimonials");
 }
@@ -343,7 +344,7 @@ export async function saveSettingsAction(formData: FormData) {
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("site_settings").upsert(settings);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(friendlySaveError(error.message));
   revalidateCatalogue();
   redirect("/admin/settings");
 }
@@ -362,7 +363,7 @@ export async function saveHeroImagesAction(formData: FormData) {
   await supabase.from("hero_images").delete().gte("sort_order", 0);
   if (items.length > 0) {
     const { error } = await supabase.from("hero_images").insert(items);
-    if (error) throw new Error(error.message);
+    if (error) throw new Error(friendlySaveError(error.message));
   }
   revalidateCatalogue();
   redirect("/admin/homepage");

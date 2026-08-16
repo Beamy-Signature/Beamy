@@ -57,8 +57,8 @@ export default async function AdminTestimonialsPage() {
               <ConfirmDelete
                 action={deleteTestimonialAction}
                 id={item.id}
-                title={`Delete ${item.customer_name}'s note?`}
-                message="This testimonial will be removed from the homepage."
+                title={`Remove ${item.customer_name}’s note?`}
+                message="This note will no longer appear on the homepage."
               />
             </div>
           </div>

@@ -11,7 +11,7 @@ export default async function AdminCollectionsPage() {
     <div>
       <AdminPageHeader
         title="Collections"
-        description="Create, rename or hide collections. Men and Women cannot be deleted because the website needs them."
+        description="Create, rename or hide collections. Men and Women stay in place so the website always has a home for those pieces."
       />
       <form action={saveCollectionAction} className="mt-8 space-y-3 border border-line bg-paper p-5">
         <h2 className="font-serif text-2xl">Create collection</h2>
@@ -75,13 +75,13 @@ export default async function AdminCollectionsPage() {
               </form>
               <div className="mt-3">
                 {locked ? (
-                  <p className="text-xs text-muted">This collection cannot be deleted.</p>
+                  <p className="text-xs text-muted">This collection stays in the catalogue. You can hide or rename it instead.</p>
                 ) : (
                   <ConfirmDelete
                     action={deleteCollectionAction}
                     id={collection.id}
-                    title={`Delete ${collection.name}?`}
-                    message="This collection will be removed. Designs inside it will remain, but will no longer sit in this collection."
+                    title={`Remove ${collection.name}?`}
+                    message="This collection will leave the list. The designs inside it will stay — they will simply no longer sit here."
                   />
                 )}
               </div>

@@ -98,7 +98,7 @@ export function AdminShell({
       <div className="h-1 shrink-0 bg-gradient-to-r from-gold via-accent to-gold" />
       {!configured ? (
         <div className="shrink-0 bg-ink px-4 py-2.5 text-center text-[11px] leading-5 tracking-wide text-paper">
-          Catalogue is using local save for now. Connect Supabase before going live so nothing is lost.
+          You are working on this computer for now. Connect Supabase before going live so every design and photo is kept safe.
         </div>
       ) : null}
 

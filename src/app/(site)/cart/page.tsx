@@ -28,7 +28,10 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <section className="px-5 py-24 text-center">
-        <h1 className="editorial-title text-5xl">Your bag is empty</h1>
+        <h1 className="editorial-title text-5xl">Your bag is waiting.</h1>
+        <p className="mx-auto mt-4 max-w-md text-muted">
+          When a piece speaks to you, add it here. We will help you finish the order on WhatsApp.
+        </p>
         <Link href="/collections" className="mt-8 inline-flex border border-ink px-5 py-3 text-[11px] tracking-[0.18em] uppercase">
           Browse collections
         </Link>

@@ -20,10 +20,10 @@ export default async function LoginPage({
           <p className="text-[11px] tracking-[0.28em] text-gold uppercase">BEAMY Catalogue</p>
           <h1 className="mt-3 font-serif text-3xl">Sign in</h1>
           <div className="gold-rule mt-4" />
-          <p className="mt-4 text-sm text-muted">For BEAMY administrators only.</p>
+          <p className="mt-4 text-sm text-muted">A quiet space to keep the BEAMY collection current.</p>
           {!configured ? (
-            <p className="mt-6 text-sm text-gold">
-              Supabase is not connected yet, so login is not required.{" "}
+            <p className="mt-6 text-sm leading-6 text-gold">
+              The catalogue is running on this computer for now, so you can go straight in.{" "}
               <Link href="/admin" className="underline">
                 Open the catalogue
               </Link>

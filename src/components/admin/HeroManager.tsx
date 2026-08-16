@@ -46,7 +46,7 @@ export function HeroManager({ images }: { images: HeroImage[] }) {
       <form action={saveHeroImagesAction} className="mt-8 space-y-4">
         <input type="hidden" name="payload" value={JSON.stringify(items)} />
         {items.length === 0 ? (
-          <p className="text-sm text-muted">No homepage images yet. Add photos above, then save.</p>
+          <p className="text-sm text-muted">The banner is waiting for photographs. Add a few above, then save.</p>
         ) : null}
         {items.map((item, index) => (
           <div key={item.id} className="flex gap-4 border border-line bg-paper p-4">

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
+import { friendlyUploadError } from "@/lib/friendly-error";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -14,13 +15,13 @@ export async function POST(request: Request) {
   const folder = String(formData.get("folder") || "designs");
 
   if (!(file instanceof File) || file.size === 0) {
-    return NextResponse.json({ error: "Choose a photo." }, { status: 400 });
+    return NextResponse.json({ error: friendlyUploadError("Choose a photo.") }, { status: 400 });
   }
   if (!ALLOWED.includes(file.type)) {
-    return NextResponse.json({ error: "Use a JPG, PNG or WEBP photo." }, { status: 400 });
+    return NextResponse.json({ error: friendlyUploadError("Use a JPG, PNG or WEBP photo.") }, { status: 400 });
   }
   if (file.size > 8 * 1024 * 1024) {
-    return NextResponse.json({ error: "Keep photos under 8MB." }, { status: 400 });
+    return NextResponse.json({ error: friendlyUploadError("Keep photos under 8MB.") }, { status: 400 });
   }
 
   const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
-      return NextResponse.json({ error: "Sign in to upload." }, { status: 401 });
+      return NextResponse.json({ error: friendlyUploadError("Sign in to upload.") }, { status: 401 });
     }
     const bucket =
       folder === "collections"
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
       upsert: false,
     });
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: friendlyUploadError(error.message) }, { status: 500 });
     }
     const { data } = supabase.storage.from(bucket).getPublicUrl(filename);
     return NextResponse.json({ url: data.publicUrl });

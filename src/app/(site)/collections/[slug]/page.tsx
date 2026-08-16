@@ -56,8 +56,8 @@ export default async function CollectionSlugPage({ params }: Props) {
         <div className="mt-12">
           {products.length === 0 ? (
             <EmptyState
-              title="No pieces yet"
-              body="This collection is being prepared."
+              title="This collection is being prepared"
+              body="New pieces are on the way. In the meantime, you are welcome to browse the rest of the house."
               href="/collections"
               cta="Browse collections"
             />
