@@ -23,7 +23,7 @@ export default async function ContactPage() {
       <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-2">
         <div>
           <p className="text-[11px] tracking-[0.28em] text-gold uppercase">Lagos</p>
-          <h1 className="editorial-title mt-3 text-5xl md:text-7xl">Contact BEAMY</h1>
+          <h1 className="editorial-title mt-3 text-[2.5rem] md:text-7xl">Contact BEAMY</h1>
           <p className="mt-6 max-w-md text-muted">
             Enquiries, fittings and commissions begin on WhatsApp. We typically respond within the day.
           </p>
@@ -31,46 +31,46 @@ export default async function ContactPage() {
             href={enquiry}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-10 inline-flex items-center gap-2 border border-ink bg-ink px-6 py-3.5 text-[11px] tracking-[0.2em] text-paper uppercase"
+            className="mt-10 inline-flex w-full items-center justify-center gap-2 border border-ink bg-ink px-6 py-3.5 text-[11px] tracking-[0.16em] text-paper uppercase sm:w-auto sm:tracking-[0.2em]"
           >
             <WhatsAppIcon className="h-4 w-4" />
             Chat on WhatsApp
           </a>
         </div>
-        <div className="space-y-8 border-t border-line pt-8 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-16">
-          <div className="flex items-start gap-4">
+        <div className="min-w-0 space-y-8 border-t border-line pt-8 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-16">
+          <div className="flex min-w-0 items-start gap-4">
             <MapPin className="mt-1 h-5 w-5 shrink-0 text-gold" />
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] tracking-[0.2em] text-gold uppercase">Studio</p>
-              <p className="mt-2">{settings.address}</p>
+              <p className="mt-2 break-words">{settings.address}</p>
             </div>
           </div>
-          <div className="flex items-start gap-4">
+          <div className="flex min-w-0 items-start gap-4">
             <Phone className="mt-1 h-5 w-5 shrink-0 text-gold" />
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] tracking-[0.2em] text-gold uppercase">Phone</p>
-              <a href={`tel:${settings.phone}`} className="mt-2 block">
+              <a href={`tel:${settings.phone}`} className="mt-2 block break-words">
                 {formatPhone(settings.phone)}
               </a>
             </div>
           </div>
-          <div className="flex items-start gap-4">
+          <div className="flex min-w-0 items-start gap-4">
             <Mail className="mt-1 h-5 w-5 shrink-0 text-gold" />
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] tracking-[0.2em] text-gold uppercase">Email</p>
-              <a href={`mailto:${settings.email}`} className="mt-2 block">
+              <a href={`mailto:${settings.email}`} className="mt-2 block break-all">
                 {settings.email}
               </a>
             </div>
           </div>
-          <div className="flex items-start gap-4">
+          <div className="flex min-w-0 items-start gap-4">
             <InstagramIcon className="mt-1 h-5 w-5 shrink-0 text-gold" />
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] tracking-[0.2em] text-gold uppercase">Instagram</p>
-              <a href={settings.instagram_fashion} className="mt-2 block" target="_blank" rel="noopener noreferrer">
+              <a href={settings.instagram_fashion} className="mt-2 block break-all" target="_blank" rel="noopener noreferrer">
                 @Beamy_fashion
               </a>
-              <a href={settings.instagram_woman} className="mt-1 block" target="_blank" rel="noopener noreferrer">
+              <a href={settings.instagram_woman} className="mt-1 block break-all" target="_blank" rel="noopener noreferrer">
                 @Beamy_woman
               </a>
             </div>

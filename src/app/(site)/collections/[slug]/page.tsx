@@ -43,7 +43,7 @@ export default async function CollectionSlugPage({ params }: Props) {
       <div className="mx-auto max-w-7xl">
         <Reveal>
           <p className="text-[11px] tracking-[0.28em] text-gold uppercase">Collection</p>
-          <h1 className="editorial-title mt-3 text-5xl md:text-7xl">{collection.name}</h1>
+          <h1 className="editorial-title mt-3 text-[2.5rem] md:text-7xl">{collection.name}</h1>
           {collection.description ? (
             <p className="mt-5 max-w-xl text-muted">{collection.description}</p>
           ) : null}

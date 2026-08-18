@@ -128,10 +128,10 @@ export default async function AboutPage() {
   return (
     <>
       <HeroSlideshow images={slides}>
-        <p className="hero-copy text-[11px] tracking-[0.32em] text-gold uppercase">
+        <p className="hero-copy max-w-full text-[11px] tracking-[0.16em] text-gold uppercase sm:tracking-[0.32em]">
           Lagos · Unisex · Bespoke
         </p>
-        <h1 className="hero-copy editorial-title mt-5 max-w-4xl text-5xl md:text-7xl lg:text-8xl">
+        <h1 className="hero-copy editorial-title mt-5 max-w-4xl text-[2.5rem] leading-[0.95] sm:text-5xl md:text-7xl lg:text-8xl">
           Clothing that holds its own.
         </h1>
         <div className="hero-copy gold-rule mt-8 bg-gold" />
@@ -149,7 +149,7 @@ export default async function AboutPage() {
             <p className="mx-auto mt-10 max-w-2xl font-serif text-2xl leading-snug text-ink md:text-3xl">
               {settings.about_short}
             </p>
-            <p className="mt-8 text-[11px] tracking-[0.28em] text-muted uppercase">
+            <p className="mt-8 text-[11px] tracking-[0.16em] text-muted uppercase sm:tracking-[0.28em]">
               Excellence · Discipline
             </p>
           </Reveal>
@@ -180,7 +180,7 @@ export default async function AboutPage() {
             </div>
             <Link
               href="/collections"
-              className="mt-10 inline-flex w-fit border border-ink px-5 py-3 text-[11px] tracking-[0.18em] uppercase transition-colors duration-300 hover:bg-ink hover:text-paper"
+              className="mt-10 inline-flex w-full justify-center border border-ink px-5 py-3 text-center text-[11px] tracking-[0.18em] uppercase transition-colors duration-300 hover:bg-ink hover:text-paper sm:w-fit"
             >
               Explore the collection
             </Link>
@@ -201,9 +201,9 @@ export default async function AboutPage() {
               <p className="text-[11px] tracking-[0.2em] text-gold uppercase">Occasions</p>
               <ul className="mt-6 divide-y divide-line border-y border-line">
                 {occasions.map((item) => (
-                  <li key={item} className="flex items-center justify-between py-4">
-                    <span className="font-serif text-2xl">{item}</span>
-                    <span className="h-px w-10 bg-gold" />
+                  <li key={item} className="flex items-center justify-between gap-4 py-4">
+                    <span className="min-w-0 font-serif text-2xl break-words">{item}</span>
+                    <span className="h-px w-8 shrink-0 bg-gold sm:w-10" />
                   </li>
                 ))}
               </ul>
@@ -214,7 +214,7 @@ export default async function AboutPage() {
                 {clients.map((item) => (
                   <p
                     key={item}
-                    className="border border-line bg-paper px-4 py-6 text-center font-serif text-xl leading-tight"
+                    className="min-w-0 border border-line bg-paper px-3 py-5 text-center font-serif text-lg leading-tight break-words sm:px-4 sm:py-6 sm:text-xl"
                   >
                     {item}
                   </p>
@@ -249,7 +249,7 @@ export default async function AboutPage() {
       </section>
 
       {mosaic.length > 0 ? (
-        <section className="bg-ink">
+        <section className="overflow-hidden bg-ink">
           <div className="grid grid-cols-2 md:grid-cols-3">
             {mosaic.map((image, index) => {
               const featured = index === 0 && mosaic.length >= 4;
@@ -285,16 +285,16 @@ export default async function AboutPage() {
             <p className="mt-8 max-w-md text-sm leading-7 text-muted md:text-base">
               {settings.address}. Enquiries, fittings and commissions begin on WhatsApp. We typically respond within the day.
             </p>
-            <div className="mt-10 flex flex-wrap gap-3">
+            <div className="mt-10 flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 href="/how-it-works"
-                className="border border-ink bg-ink px-5 py-3 text-[11px] tracking-[0.18em] text-paper uppercase transition-colors duration-300 hover:bg-transparent hover:text-ink"
+                className="border border-ink bg-ink px-5 py-3 text-center text-[11px] tracking-[0.18em] text-paper uppercase transition-colors duration-300 hover:bg-transparent hover:text-ink"
               >
                 How it works
               </Link>
               <Link
                 href="/contact"
-                className="border border-ink px-5 py-3 text-[11px] tracking-[0.18em] uppercase transition-colors duration-300 hover:bg-ink hover:text-paper"
+                className="border border-ink px-5 py-3 text-center text-[11px] tracking-[0.18em] uppercase transition-colors duration-300 hover:bg-ink hover:text-paper"
               >
                 Visit contact
               </Link>

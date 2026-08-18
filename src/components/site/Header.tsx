@@ -29,13 +29,13 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-line/70 bg-paper/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3 md:px-8">
-        <Link href="/" className="shrink-0" onClick={() => setOpen(false)}>
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-5 md:px-8">
+        <Link href="/" className="min-w-0" onClick={() => setOpen(false)}>
           <BrandLogo
             variant="lockup"
             align="left"
             priority
-            className="h-11 w-[13.5rem] md:h-14 md:w-[17.5rem]"
+            className="h-9 w-[clamp(8.75rem,42vw,13.5rem)] sm:h-11 sm:w-[13.5rem] md:h-14 md:w-[17.5rem]"
           />
         </Link>
 
@@ -58,7 +58,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
           })}
         </nav>
 
-        <div className="flex items-center gap-1 sm:gap-3">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-3">
           <CartButton />
           <a
             href={enquiry}
@@ -86,7 +86,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
       <div className={`mobile-panel lg:hidden ${open ? "open" : ""}`}>
         <div>
-          <nav className="border-t border-line bg-paper px-5 py-8">
+          <nav className="border-t border-line bg-paper px-4 py-8 sm:px-5">
             <div className="flex flex-col gap-5">
               {links.map((link, index) => (
                 <Link
@@ -114,7 +114,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
                 href={enquiry}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-flex w-fit border border-ink bg-ink px-5 py-3 text-[11px] tracking-[0.18em] text-paper uppercase"
+                className="mt-4 inline-flex w-full justify-center border border-ink bg-ink px-5 py-3 text-center text-[11px] tracking-[0.18em] text-paper uppercase sm:w-fit"
               >
                 Chat on WhatsApp
               </a>

@@ -19,7 +19,7 @@ export default async function MenCollectionPage() {
       <div className="mx-auto max-w-7xl">
         <Reveal>
           <p className="text-[11px] tracking-[0.28em] text-gold uppercase">Men</p>
-          <h1 className="editorial-title mt-3 text-5xl md:text-7xl">Men's Collection</h1>
+          <h1 className="editorial-title mt-3 text-[2.5rem] md:text-7xl">Men's Collection</h1>
           <p className="mt-5 max-w-xl text-muted">
             Structured tailoring for work, weddings and refined everyday wear.
           </p>

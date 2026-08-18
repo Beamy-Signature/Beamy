@@ -18,9 +18,9 @@ export default async function SiteLayout({
   return (
     <SiteProvider whatsappNumber={settings.whatsapp_number}>
       <CartProvider>
-        <div className="flex min-h-full flex-col">
+        <div className="flex min-h-full max-w-full flex-col overflow-x-clip">
           <Header settings={settings} />
-          <main className="flex-1">{children}</main>
+          <main className="min-w-0 flex-1 overflow-x-clip">{children}</main>
           <Footer settings={settings} />
           <WhatsAppFloat settings={settings} />
           <CartDrawer />

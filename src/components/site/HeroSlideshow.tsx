@@ -35,14 +35,14 @@ export function HeroSlideshow({
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden bg-ink text-paper"
+      className="relative min-h-dvh overflow-hidden bg-ink text-paper"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
       {slides.map((slide, slideIndex) => (
         <div
           key={slide.url}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-out ${
+          className={`absolute inset-0 overflow-hidden transition-opacity duration-1000 ease-out ${
             slideIndex === index ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -58,11 +58,11 @@ export function HeroSlideshow({
       ))}
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/25" />
 
-      <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-5 pb-24 md:px-8 md:pb-28">
-        {children}
+      <div className="relative mx-auto flex min-h-dvh w-full min-w-0 max-w-7xl flex-col justify-end px-4 pb-24 sm:px-5 md:px-8 md:pb-28">
+        <div className="min-w-0 max-w-full">{children}</div>
 
         {slides.length > 0 ? (
-          <div className="mt-10 flex items-end justify-between gap-6">
+          <div className="mt-10 flex w-full min-w-0 flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="hidden gap-2 md:flex">
               {slides.map((slide, slideIndex) => (
                 <button
@@ -80,18 +80,18 @@ export function HeroSlideshow({
                 </button>
               ))}
             </div>
-            <div className="flex items-center gap-4">
-              <p className="text-[11px] tracking-[0.28em] text-paper/70">
+            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+              <p className="shrink-0 text-[11px] tracking-[0.16em] text-paper/70 sm:tracking-[0.28em]">
                 {String(index + 1).padStart(2, "0")} — {String(slides.length).padStart(2, "0")}
               </p>
-              <div className="flex gap-2">
+              <div className="flex min-w-0 flex-wrap gap-1.5">
                 {slides.map((slide, slideIndex) => (
                   <button
                     key={`dot-${slide.url}`}
                     type="button"
                     aria-label={`Go to image ${slideIndex + 1}`}
                     onClick={() => goTo(slideIndex)}
-                    className={`h-1 w-8 transition-colors duration-500 ${
+                    className={`h-1 w-6 transition-colors duration-500 sm:w-8 ${
                       slideIndex === index ? "bg-gold" : "bg-paper/30"
                     }`}
                   />

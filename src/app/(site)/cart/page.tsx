@@ -28,11 +28,11 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <section className="px-5 py-24 text-center">
-        <h1 className="editorial-title text-5xl">Your bag is waiting.</h1>
+        <h1 className="editorial-title text-[2.5rem] md:text-5xl">Your bag is waiting.</h1>
         <p className="mx-auto mt-4 max-w-md text-muted">
           When a piece speaks to you, add it here. We will help you finish the order on WhatsApp.
         </p>
-        <Link href="/collections" className="mt-8 inline-flex border border-ink px-5 py-3 text-[11px] tracking-[0.18em] uppercase">
+        <Link href="/collections" className="mt-8 inline-flex w-full max-w-xs justify-center border border-ink px-5 py-3 text-[11px] tracking-[0.18em] uppercase sm:w-auto">
           Browse collections
         </Link>
       </section>
@@ -41,25 +41,25 @@ export default function CartPage() {
 
   return (
     <section className="px-5 py-16 md:px-8 md:py-24">
-      <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-[1.1fr_0.9fr]">
-        <div>
-          <h1 className="editorial-title text-5xl">Your bag</h1>
+      <div className="mx-auto grid max-w-7xl min-w-0 gap-16 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="min-w-0">
+          <h1 className="editorial-title text-[2.5rem] md:text-5xl">Your bag</h1>
           <ul className="mt-10 space-y-8">
             {items.map((item) => (
-              <li key={item.productId} className="flex gap-5 border-b border-line pb-8">
-                <div className="relative h-32 w-24 shrink-0 overflow-hidden bg-line">
+              <li key={item.productId} className="flex min-w-0 gap-4 border-b border-line pb-8 sm:gap-5">
+                <div className="relative h-28 w-20 shrink-0 overflow-hidden bg-line sm:h-32 sm:w-24">
                   {item.image ? (
                     <SafeImage src={item.image} alt={item.name} fill className="object-cover" sizes="96px" />
                   ) : null}
                 </div>
-                <div className="flex-1">
-                  <Link href={`/product/${item.slug}`} className="font-serif text-2xl">
+                <div className="min-w-0 flex-1">
+                  <Link href={`/product/${item.slug}`} className="font-serif text-xl break-words sm:text-2xl">
                     {item.name}
                   </Link>
                   <p className="mt-1 text-sm text-muted">
                     {formatPrice(item.price, item.priceDisplayMode)}
                   </p>
-                  <div className="mt-4 flex items-center gap-3">
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
                     <button type="button" className="h-9 w-9 border border-line" onClick={() => updateQuantity(item.productId, item.quantity - 1)}>
                       −
                     </button>
@@ -77,7 +77,7 @@ export default function CartPage() {
           </ul>
         </div>
 
-        <div className="border border-line bg-paper p-6 md:p-8">
+        <div className="min-w-0 border border-line bg-paper p-5 md:p-8">
           <h2 className="font-serif text-3xl">Checkout on WhatsApp</h2>
           <p className="mt-3 text-sm text-muted">
             Fill this in so BEAMY receives a clear, numbered order with your total.
@@ -120,9 +120,9 @@ export default function CartPage() {
               />
             </label>
           </div>
-          <div className="mt-6 flex justify-between border-t border-line pt-4 text-sm">
+          <div className="mt-6 flex flex-wrap items-start justify-between gap-2 border-t border-line pt-4 text-sm">
             <span>Total</span>
-            <span className="font-medium">
+            <span className="max-w-full text-right font-medium break-words">
               {formatNaira(subtotal)}
               {hasOnRequest ? " + items on request" : ""}
             </span>

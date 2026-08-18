@@ -17,7 +17,7 @@ export default async function CollectionsPage() {
       <div className="mx-auto max-w-7xl">
         <Reveal>
           <p className="text-[11px] tracking-[0.28em] text-gold uppercase">Catalogue</p>
-          <h1 className="editorial-title mt-3 text-5xl md:text-7xl">Collections</h1>
+          <h1 className="editorial-title mt-3 text-[2.5rem] md:text-7xl">Collections</h1>
           <p className="mt-5 max-w-xl text-muted">
             Contemporary pieces for work, weddings, occasions and refined everyday wear.
           </p>
@@ -39,7 +39,7 @@ export default async function CollectionsPage() {
                   />
                 ) : null}
                 <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
-                <div className="absolute right-0 bottom-0 left-0 p-7">
+                <div className="absolute right-0 bottom-0 left-0 p-5 sm:p-7">
                   <h2 className="editorial-title text-4xl">{collection.name}</h2>
                   <p className="mt-2 text-sm text-paper/70">{collection.description}</p>
                 </div>

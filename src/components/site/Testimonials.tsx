@@ -15,18 +15,18 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
         <p className="text-[11px] tracking-[0.28em] text-gold uppercase">Client notes</p>
         <blockquote
           key={item.id}
-          className="editorial-title mt-8 text-3xl transition-opacity duration-500 md:text-5xl"
+          className="editorial-title mt-8 text-[1.75rem] break-words transition-opacity duration-500 sm:text-3xl md:text-5xl"
         >
           “{item.quote}”
         </blockquote>
-        <div className="mt-8 flex items-center justify-center gap-4">
+        <div className="mt-8 flex min-w-0 flex-wrap items-center justify-center gap-4">
           {item.image_url ? (
             <div className="relative h-12 w-12 overflow-hidden">
               <SafeImage src={item.image_url} alt={item.customer_name} fill className="object-cover" sizes="48px" />
             </div>
           ) : null}
-          <div className="text-left">
-            <p className="text-sm">{item.customer_name}</p>
+          <div className="min-w-0 text-left">
+            <p className="text-sm break-words">{item.customer_name}</p>
             <p className="text-xs tracking-wide text-muted">
               {[item.role, item.location].filter(Boolean).join(" · ")}
             </p>

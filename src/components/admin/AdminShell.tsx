@@ -112,7 +112,7 @@ export function AdminShell({
               variant="lockup"
               align="left"
               priority
-              className="h-10 w-44 sm:h-11 sm:w-[13.5rem] lg:h-12 lg:w-[16rem]"
+              className="h-9 w-[clamp(8.5rem,40vw,11rem)] sm:h-11 sm:w-[13.5rem] lg:h-12 lg:w-[16rem]"
             />
           </Link>
           <div className="flex items-center gap-3 sm:gap-5">

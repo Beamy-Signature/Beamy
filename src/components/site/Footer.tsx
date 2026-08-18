@@ -34,50 +34,50 @@ export function Footer({ settings }: { settings: SiteSettings }) {
 
         <div>
           <p className="mb-4 text-[11px] tracking-[0.22em] text-gold uppercase">Contact</p>
-          <div className="flex flex-col gap-3.5 text-sm text-paper/80">
-            <p className="flex items-start gap-3">
+          <div className="flex min-w-0 flex-col gap-3.5 text-sm text-paper/80">
+            <p className="flex min-w-0 items-start gap-3">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-              <span>{settings.address}</span>
+              <span className="min-w-0 break-words">{settings.address}</span>
             </p>
-            <a href={`tel:${settings.phone}`} className="flex items-center gap-3 hover:text-gold">
-              <Phone className="h-4 w-4 shrink-0 text-gold" />
-              {formatPhone(settings.phone)}
+            <a href={`tel:${settings.phone}`} className="flex min-w-0 items-start gap-3 hover:text-gold">
+              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+              <span className="min-w-0 break-words">{formatPhone(settings.phone)}</span>
             </a>
-            <a href={`mailto:${settings.email}`} className="flex items-center gap-3 hover:text-gold">
-              <Mail className="h-4 w-4 shrink-0 text-gold" />
-              {settings.email}
+            <a href={`mailto:${settings.email}`} className="flex min-w-0 items-start gap-3 hover:text-gold">
+              <Mail className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+              <span className="min-w-0 break-all">{settings.email}</span>
             </a>
             <a
               href={settings.instagram_fashion}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 hover:text-gold"
+              className="flex min-w-0 items-start gap-3 hover:text-gold"
             >
-              <InstagramIcon className="h-4 w-4 shrink-0 text-gold" />
-              @Beamy_fashion
+              <InstagramIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+              <span className="min-w-0 break-all">@Beamy_fashion</span>
             </a>
             <a
               href={settings.instagram_woman}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 hover:text-gold"
+              className="flex min-w-0 items-start gap-3 hover:text-gold"
             >
-              <InstagramIcon className="h-4 w-4 shrink-0 text-gold" />
-              @Beamy_woman
+              <InstagramIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+              <span className="min-w-0 break-all">@Beamy_woman</span>
             </a>
             <a
               href={enquiry}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 text-gold hover:text-gold-soft"
+              className="flex min-w-0 items-start gap-3 text-gold hover:text-gold-soft"
             >
-              <WhatsAppIcon className="h-4 w-4 shrink-0" />
+              <WhatsAppIcon className="mt-0.5 h-4 w-4 shrink-0" />
               Chat on WhatsApp
             </a>
           </div>
         </div>
       </div>
-      <div className="border-t border-white/10 px-5 py-5 text-center text-[11px] tracking-[0.16em] text-paper/40 uppercase md:px-8">
+      <div className="border-t border-white/10 px-5 py-5 text-center text-[10px] leading-relaxed tracking-[0.1em] text-paper/40 uppercase sm:text-[11px] sm:tracking-[0.16em] md:px-8">
         © {new Date().getFullYear()} BEAMY. Beamsssy Signature. All rights reserved.
       </div>
     </footer>

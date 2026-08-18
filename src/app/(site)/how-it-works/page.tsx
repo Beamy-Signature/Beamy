@@ -43,7 +43,7 @@ export default async function HowItWorksPage() {
       <section className="px-5 py-16 md:px-8 md:py-24">
         <div className="mx-auto max-w-7xl">
           <p className="text-[11px] tracking-[0.28em] text-gold uppercase">Process</p>
-          <h1 className="editorial-title mt-3 max-w-3xl text-5xl md:text-7xl">
+          <h1 className="editorial-title mt-3 max-w-3xl text-[2.5rem] md:text-7xl">
             Bespoke, without the mystery.
           </h1>
           <p className="mt-6 max-w-xl text-muted">

@@ -9,7 +9,7 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
   const image = product.images[0];
 
   return (
-    <article className="group">
+    <article className="group min-w-0">
       <Link href={`/product/${product.slug}`} className="block">
         <div className="relative aspect-[3/4] overflow-hidden bg-line">
           {image ? (
@@ -28,11 +28,11 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
         </div>
       </Link>
       <div className="pt-4">
-        <p className="text-[10px] tracking-[0.2em] text-muted uppercase">
+        <p className="text-[10px] tracking-[0.16em] text-muted uppercase break-words sm:tracking-[0.2em]">
           {product.category?.name ?? product.gender}
         </p>
         <Link href={`/product/${product.slug}`}>
-          <h3 className="mt-1 font-serif text-2xl leading-tight transition-colors duration-300 group-hover:text-ink">
+          <h3 className="mt-1 font-serif text-2xl leading-tight break-words transition-colors duration-300 group-hover:text-ink">
             {product.name}
           </h3>
         </Link>

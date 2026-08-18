@@ -13,7 +13,7 @@ export function AuthShell({
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-gold via-accent to-gold" />
       <div className="admin-page-enter w-full max-w-sm">
         <Link href="/admin/login" className="block">
-          <BrandLogo variant="lockup" className="mx-auto mb-8 h-14 w-[17.5rem]" />
+          <BrandLogo variant="lockup" className="mx-auto mb-8 h-12 w-full max-w-[17.5rem] sm:h-14" />
         </Link>
         <div className="border border-line bg-paper p-6 sm:p-8">
           <p className="text-[11px] tracking-[0.28em] text-gold uppercase">BEAMY Catalogue</p>

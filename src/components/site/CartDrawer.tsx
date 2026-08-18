@@ -112,7 +112,7 @@ export function CartButton() {
     <button
       type="button"
       onClick={() => setOpen(true)}
-      className="relative flex h-11 items-center px-2 text-[11px] tracking-[0.16em] uppercase"
+      className="relative flex h-11 shrink-0 items-center px-1.5 text-[10px] tracking-[0.12em] uppercase sm:px-2 sm:text-[11px] sm:tracking-[0.16em]"
       aria-label="Open bag"
     >
       Bag

@@ -46,9 +46,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${cormorant.variable} h-full antialiased`}
+      className={`${outfit.variable} ${cormorant.variable} h-full overflow-x-clip antialiased`}
     >
-      <body className="min-h-full bg-background font-sans text-foreground">
+      <body className="min-h-full max-w-full overflow-x-clip bg-background font-sans text-foreground">
         {children}
       </body>
     </html>

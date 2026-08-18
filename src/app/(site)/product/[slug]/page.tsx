@@ -47,22 +47,22 @@ export default async function ProductPage({ params }: Props) {
           <ProductGallery images={product.images} name={product.name} />
         </Reveal>
         <Reveal delay={120} className="lg:pt-8">
-          <p className="text-[11px] tracking-[0.22em] text-gold uppercase">
+          <p className="text-[11px] tracking-[0.16em] text-gold uppercase sm:tracking-[0.22em]">
             {[product.category?.name, product.collection?.name].filter(Boolean).join(" · ")}
           </p>
-          <h1 className="editorial-title mt-4 text-4xl md:text-6xl">{product.name}</h1>
+          <h1 className="editorial-title mt-4 text-4xl break-words md:text-6xl">{product.name}</h1>
           <p className="mt-6 text-lg">{formatPrice(product.price, product.price_display_mode)}</p>
           <p className="mt-6 max-w-lg text-sm leading-7 text-muted">{product.description}</p>
           {product.additional_info ? (
             <p className="mt-4 max-w-lg text-sm leading-7 text-muted">{product.additional_info}</p>
           ) : null}
           <div className="mt-10 flex flex-wrap gap-3">
-            <AddToCartButton product={product} className="min-w-[180px]" />
+            <AddToCartButton product={product} className="w-full min-w-0 sm:w-auto sm:min-w-[180px]" />
             <OrderButton
               productName={product.name}
               customMessage={product.whatsapp_message}
               variant="outline"
-              className="min-w-[180px]"
+              className="w-full min-w-0 sm:w-auto sm:min-w-[180px]"
             />
           </div>
         </Reveal>
@@ -71,9 +71,9 @@ export default async function ProductPage({ params }: Props) {
       {related.length > 0 ? (
         <div className="mx-auto mt-24 max-w-7xl">
           <Reveal>
-            <div className="flex items-end justify-between">
-              <h2 className="editorial-title text-3xl md:text-5xl">You may also like</h2>
-              <Link href="/collections" className="text-[11px] tracking-[0.18em] uppercase">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <h2 className="editorial-title min-w-0 text-3xl md:text-5xl">You may also like</h2>
+              <Link href="/collections" className="shrink-0 text-[11px] tracking-[0.18em] uppercase">
                 All collections
               </Link>
             </div>

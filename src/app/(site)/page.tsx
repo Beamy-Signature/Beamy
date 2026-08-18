@@ -40,19 +40,19 @@ export default async function HomePage() {
   return (
     <>
       <HeroSlideshow images={heroImages.map((image) => ({ url: image.url, alt: image.alt }))}>
-        <p className="hero-copy text-[11px] tracking-[0.32em] text-gold uppercase">
+        <p className="hero-copy max-w-full text-[11px] tracking-[0.16em] text-gold uppercase sm:tracking-[0.32em]">
           Lagos · Unisex · Bespoke
         </p>
-        <h1 className="hero-copy editorial-title mt-4 max-w-3xl text-5xl md:text-7xl lg:text-8xl">
+        <h1 className="hero-copy editorial-title mt-4 max-w-3xl text-[2.5rem] leading-[0.95] sm:text-5xl md:text-7xl lg:text-8xl">
           {settings.hero_headline}
         </h1>
         <p className="hero-copy mt-6 max-w-xl text-sm leading-7 text-paper/75 md:text-base">
           {settings.hero_subheadline}
         </p>
-        <div className="hero-copy mt-10 flex flex-wrap gap-4">
+        <div className="hero-copy mt-10 flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
           <Link
             href="/collections"
-            className="border border-paper bg-paper px-6 py-3.5 text-[11px] tracking-[0.2em] text-ink uppercase transition-colors duration-300 hover:bg-transparent hover:text-paper"
+            className="border border-paper bg-paper px-6 py-3.5 text-center text-[11px] tracking-[0.16em] text-ink uppercase transition-colors duration-300 hover:bg-transparent hover:text-paper sm:tracking-[0.2em]"
           >
             Explore Collection
           </Link>
@@ -60,7 +60,7 @@ export default async function HomePage() {
             href={enquiry}
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-paper/40 px-6 py-3.5 text-[11px] tracking-[0.2em] text-paper uppercase transition-colors duration-300 hover:border-gold hover:text-gold"
+            className="border border-paper/40 px-6 py-3.5 text-center text-[11px] tracking-[0.16em] text-paper uppercase transition-colors duration-300 hover:border-gold hover:text-gold sm:tracking-[0.2em]"
           >
             Chat on WhatsApp
           </a>
@@ -90,7 +90,7 @@ export default async function HomePage() {
                     />
                   ) : null}
                   <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
-                  <div className="absolute right-0 bottom-0 left-0 p-8">
+                  <div className="absolute right-0 bottom-0 left-0 p-5 sm:p-8">
                     <h3 className="editorial-title text-4xl md:text-5xl">{collection!.name}</h3>
                     <p className="mt-3 max-w-sm text-sm text-paper/75">{collection!.description}</p>
                   </div>
@@ -105,7 +105,7 @@ export default async function HomePage() {
         <section className="bg-paper px-5 py-20 md:px-8 md:py-28">
           <div className="mx-auto max-w-7xl">
             <Reveal>
-              <div className="flex items-end justify-between gap-4">
+              <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <p className="text-[11px] tracking-[0.28em] text-gold uppercase">Featured pieces</p>
                   <h2 className="editorial-title mt-3 text-4xl md:text-6xl">Selected for presence.</h2>
@@ -148,7 +148,7 @@ export default async function HomePage() {
             <p className="mt-6 max-w-lg text-sm leading-7 text-muted">{settings.about_short}</p>
             <Link
               href="/about"
-              className="mt-8 inline-flex w-fit border border-ink px-5 py-3 text-[11px] tracking-[0.18em] uppercase transition-colors duration-300 hover:bg-ink hover:text-paper"
+              className="mt-8 inline-flex w-full justify-center border border-ink px-5 py-3 text-center text-[11px] tracking-[0.18em] uppercase transition-colors duration-300 hover:bg-ink hover:text-paper sm:w-fit"
             >
               Discover BEAMY
             </Link>
@@ -183,7 +183,7 @@ export default async function HomePage() {
       </section>
 
       {gallery.length > 0 ? (
-        <section className="bg-ink">
+        <section className="overflow-hidden bg-ink">
           <div className="grid grid-cols-2 md:grid-cols-3">
             {gallery.map((image) => (
               <div key={image.id} className="group relative aspect-[4/5] overflow-hidden">
