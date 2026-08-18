@@ -140,6 +140,8 @@ alter table public.gallery_images enable row level security;
 alter table public.hero_images enable row level security;
 alter table public.site_settings enable row level security;
 
+-- Optional lock: if this table has rows, only those emails can save.
+-- Leave it empty so anyone who signs up can keep the catalogue current.
 create table if not exists public.catalogue_admins (
   email text primary key
 );

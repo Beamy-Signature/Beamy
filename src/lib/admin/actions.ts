@@ -7,9 +7,10 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { slugify } from "@/lib/slug";
 import { hydrateProduct, readStore, writeStore } from "@/lib/data/local-store";
 import { LOCKED_COLLECTION_SLUGS } from "@/lib/data/gender";
-import { requireSupabaseUser, isAllowedAdminEmail } from "@/lib/admin/guard";
+import { requireSupabaseUser } from "@/lib/admin/guard";
 import { upsertAndPrune, withoutCreatedAt } from "@/lib/admin/sync-rows";
 import { friendlyAuthError, friendlySaveError } from "@/lib/friendly-error";
+import { getRequestOrigin } from "@/lib/request-origin";
 import type { AdminNoticeKey } from "@/lib/admin/notices";
 import type {
   GalleryImage,
@@ -86,7 +87,7 @@ export async function loginAction(formData: FormData) {
   if (!isSupabaseConfigured()) {
     throw new Error("The catalogue is still on this computer. Connect Supabase when you are ready to go live.");
   }
-  const email = String(formData.get("email") ?? "");
+  const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "/admin");
   const supabase = await createClient();
@@ -94,13 +95,55 @@ export async function loginAction(formData: FormData) {
   if (error) {
     redirect(`/admin/login?error=${encodeURIComponent(friendlyAuthError(error.message))}`);
   }
-  if (!isAllowedAdminEmail(email)) {
-    await supabase.auth.signOut();
-    redirect(
-      `/admin/login?error=${encodeURIComponent(friendlyAuthError("This account cannot open the catalogue."))}`,
-    );
-  }
   redirect(next.startsWith("/admin") ? next : "/admin");
+}
+
+export async function signupAction(formData: FormData) {
+  if (!isSupabaseConfigured()) {
+    throw new Error("The catalogue is still on this computer. Connect Supabase when you are ready to go live.");
+  }
+  const email = String(formData.get("email") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+  const confirm = String(formData.get("confirm") ?? "");
+  if (password.length < 8) {
+    redirect(`/admin/signup?error=${encodeURIComponent(friendlyAuthError("Please choose a password of at least 8 characters."))}`);
+  }
+  if (password !== confirm) {
+    redirect(`/admin/signup?error=${encodeURIComponent(friendlyAuthError("Those passwords do not match."))}`);
+  }
+  const origin = await getRequestOrigin();
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: `${origin}/admin/auth/callback?next=/admin`,
+    },
+  });
+  if (error) {
+    redirect(`/admin/signup?error=${encodeURIComponent(friendlyAuthError(error.message))}`);
+  }
+  if (data.session) redirect("/admin");
+  redirect("/admin/login?notice=check-email");
+}
+
+export async function forgotPasswordAction(formData: FormData) {
+  if (!isSupabaseConfigured()) {
+    throw new Error("The catalogue is still on this computer. Connect Supabase when you are ready to go live.");
+  }
+  const email = String(formData.get("email") ?? "").trim();
+  const origin = await getRequestOrigin();
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/admin/auth/callback?next=/admin/reset-password`,
+  });
+  if (error) {
+    const text = error.message.toLowerCase();
+    if (text.includes("rate") || text.includes("too many")) {
+      redirect(`/admin/forgot-password?error=${encodeURIComponent(friendlyAuthError(error.message))}`);
+    }
+  }
+  redirect("/admin/login?notice=reset-sent");
 }
 
 export async function logoutAction() {

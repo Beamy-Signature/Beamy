@@ -7,13 +7,14 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAdminPath = pathname.startsWith("/admin");
   const isApiPath = pathname.startsWith("/api");
+  const isAuthCallback = pathname === "/auth/callback" || pathname.startsWith("/auth/callback/");
   const isMetaPath = pathname === "/robots.txt" || pathname === "/sitemap.xml";
 
   if (target === "web" && isAdminPath) {
     return NextResponse.rewrite(new URL("/not-found", request.url));
   }
 
-  if (target === "admin" && !isAdminPath && !isApiPath && !isMetaPath) {
+  if (target === "admin" && !isAdminPath && !isApiPath && !isMetaPath && !isAuthCallback) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin";
     url.search = "";

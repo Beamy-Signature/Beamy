@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 import { friendlyUploadError } from "@/lib/friendly-error";
-import { isAllowedAdminEmail } from "@/lib/admin/guard";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -47,7 +46,7 @@ export async function POST(request: Request) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user || !isAllowedAdminEmail(user.email)) {
+    if (!user) {
       return NextResponse.json({ error: friendlyUploadError("Sign in to upload.") }, { status: 401 });
     }
     const bucket = bucketFor(folder);

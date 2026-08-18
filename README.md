@@ -35,7 +35,7 @@ Copy `.env.example` to `.env.local` when you are ready to connect Supabase. Unti
 
 The catalogue is written for a non-technical owner. Language stays simple: **Add New Design**, **All Designs**, **Homepage images**.
 
-Without Supabase, changes are stored on this computer only. Before going live, create a Supabase project, run `supabase/schema.sql` and `supabase/seed.sql`, add an Auth user, and set the environment variables. Full steps are in [DEPLOY.md](./DEPLOY.md).
+Without Supabase, changes are stored on this computer only. Before going live, create a Supabase project, run `supabase/schema.sql` and `supabase/seed.sql`, enable email sign-ups, and set the environment variables. Full steps are in [DEPLOY.md](./DEPLOY.md).
 
 ## Deploy
 

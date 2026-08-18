@@ -4,8 +4,18 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export async function updateSession(request: NextRequest) {
   const response = NextResponse.next({ request });
-  const isAdminPath = request.nextUrl.pathname.startsWith("/admin");
-  const isLoginPath = request.nextUrl.pathname === "/admin/login";
+  const pathname = request.nextUrl.pathname;
+  const isAdminPath = pathname.startsWith("/admin");
+  const isPublicAdminPath =
+    pathname === "/admin/login" ||
+    pathname === "/admin/signup" ||
+    pathname === "/admin/forgot-password" ||
+    pathname === "/admin/reset-password" ||
+    pathname.startsWith("/admin/auth/callback");
+  const isGuestOnlyPath =
+    pathname === "/admin/login" ||
+    pathname === "/admin/signup" ||
+    pathname === "/admin/forgot-password";
 
   if (!isSupabaseConfigured()) {
     return response;
@@ -35,16 +45,17 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (isAdminPath && !isLoginPath && !user) {
+  if (isAdminPath && !isPublicAdminPath && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     url.searchParams.set("next", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 
-  if (isLoginPath && user) {
+  if (isGuestOnlyPath && user) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin";
+    url.search = "";
     return NextResponse.redirect(url);
   }
 

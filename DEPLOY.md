@@ -57,22 +57,15 @@ In Supabase: **SQL Editor → New query**
 
 If a statement errors because something already exists, you can usually ignore that and continue.
 
-### Auth (admin login)
+### Auth (sign in, sign up, forgot password)
 
-1. **Authentication → Providers** → Email stays on.
-2. Turn **off** “Confirm email” for the first admin if you want faster setup (turn it back on later if you prefer).
-3. **Authentication → Users → Add user**
-   - Email: the owner’s Gmail (or `beamysignature25@gmail.com`)
-   - Password: give her a simple password in person, then she can change it
-4. There is no public registration. Only users you create can open `/admin`.
-5. Optional but recommended: run `supabase/patch-admins.sql`, then insert the owner's email:
+1. **Authentication → Providers → Email** stays on.
+2. Turn **on** “Allow new users to sign up”.
+3. “Confirm email” can stay on. After sign up, the person checks their inbox, then signs in. Turn it off only if you want them to enter the catalogue immediately.
+4. People create their own accounts at `/admin/signup`. Existing accounts use **Forgot password** at `/admin/forgot-password`.
+5. Leave `catalogue_admins` empty. If that table has any email rows, only those emails can save — new sign-ups can open the catalogue but cannot publish. If you previously inserted an owner email, run `supabase/unlock-catalogue-admins.sql`.
 
-```sql
-insert into public.catalogue_admins (email) values ('beamysignature25@gmail.com')
-on conflict (email) do nothing;
-```
-
-Also set `ADMIN_EMAILS` to that same address on both Vercel projects so only the owner can open the catalogue.
+Do **not** set `ADMIN_EMAILS`. The catalogue no longer locks to one owner address.
 
 ---
 
@@ -119,7 +112,6 @@ Do **not** commit `.env.local`.
 | `NEXT_PUBLIC_SUPABASE_URL` | from Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | from Supabase |
 | `NEXT_PUBLIC_SITE_URL` | this project's `*.vercel.app` URL (after first deploy you can add it and redeploy) |
-| `ADMIN_EMAILS` | the owner's login email, e.g. `beamysignature25@gmail.com` |
 
 4. Deploy.
 5. After the first deploy, add the live URL in Supabase:
@@ -139,7 +131,7 @@ Example:
 
 | App | URL |
 |---|---|
-| Public website | `https://beamy-web.vercel.app` |
+| Public website | `https://beamy-eight.vercel.app` |
 | Catalogue / CMS | `https://beamy-cms.vercel.app` |
 
 Vercel assigns the exact names. Copy them from **Project → Settings → Domains** after each deploy.
@@ -157,7 +149,7 @@ Create a GitHub repository, push `main`, and **do not** commit `.env.local`.
 #### 2. Website project
 
 1. [vercel.com](https://vercel.com) → **Add New… → Project** → import the GitHub repo.
-2. Project name: `beamy-web`.
+2. Project name: `beamy-eight` (or whatever Vercel assigns).
 3. Framework: Next.js (auto).
 4. **Build Command:** `npm run build:web` (override the default `next build`).
 5. Environment variables (Production + Preview):
@@ -169,9 +161,8 @@ Create a GitHub repository, push `main`, and **do not** commit `.env.local`.
 | `NEXT_PUBLIC_SITE_URL` | this website's `*.vercel.app` URL |
 | `NEXT_PUBLIC_SUPABASE_URL` | from Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | from Supabase |
-| `ADMIN_EMAILS` | the owner's login email |
 
-6. Deploy. Use the URL Vercel shows, for example `https://beamy-web.vercel.app`.
+6. Deploy. Use the URL Vercel shows, for example `https://beamy-eight.vercel.app`.
 
 `/admin` is hidden on this project.
 
@@ -186,10 +177,9 @@ Create a GitHub repository, push `main`, and **do not** commit `.env.local`.
 |---|---|
 | `APP_TARGET` | `admin` |
 | `NEXT_PUBLIC_APP_TARGET` | `admin` |
-| `NEXT_PUBLIC_SITE_URL` | the website Vercel URL, e.g. `https://beamy-web.vercel.app` |
+| `NEXT_PUBLIC_SITE_URL` | the website Vercel URL, e.g. `https://beamy-eight.vercel.app` |
 | `NEXT_PUBLIC_SUPABASE_URL` | from Supabase (same as the website) |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | from Supabase (same as the website) |
-| `ADMIN_EMAILS` | the owner's login email (same as the website) |
 
 5. Deploy. Use the URL Vercel shows, for example `https://beamy-cms.vercel.app`. Visiting `/` on this project redirects to `/admin`.
 
@@ -200,9 +190,11 @@ Create a GitHub repository, push `main`, and **do not** commit `.env.local`.
 - **Site URL:** `https://beamy-cms.vercel.app` (login lives on the CMS)
 - **Redirect URLs:**
   - `https://beamy-cms.vercel.app/**`
-  - `https://beamy-web.vercel.app/**`
+  - `https://beamy-eight.vercel.app/**`
+  - `http://localhost:3000/**`
+  - `http://localhost:3001/**`
 
-Replace those hostnames with the real Vercel URLs from each project. Create the admin user under **Authentication → Users** if you have not already.
+Replace those hostnames with the real Vercel URLs from each project. Confirm email sign-ups are allowed under **Authentication → Providers → Email**.
 
 #### 5. Check it
 

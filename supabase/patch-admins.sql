@@ -1,6 +1,6 @@
--- Optional: tighten catalogue writes to owner emails.
--- Safe to run on an existing project. Until you insert a row, any Auth user
--- you created can still save — same as today.
+-- Optional: only needed if you later want to lock writes to a short email list.
+-- Leave the table empty so anyone who signs up can save.
+-- If you insert even one email, new sign-ups can sign in but cannot publish.
 
 create table if not exists public.catalogue_admins (
   email text primary key
@@ -59,6 +59,6 @@ create policy "admin write media" on storage.objects for all to authenticated us
   and public.is_catalogue_admin()
 );
 
--- After this runs, lock writes to the owner by inserting their login email:
+-- Do not insert emails if people should be able to sign up and save.
 -- insert into public.catalogue_admins (email) values ('owner@email.com')
 -- on conflict (email) do nothing;
