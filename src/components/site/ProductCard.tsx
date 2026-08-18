@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { SafeImage } from "@/components/site/SafeImage";
 import Link from "next/link";
 import { AddToCartButton } from "@/components/site/AddToCartButton";
 import { OrderButton } from "@/components/site/OrderButton";
@@ -13,7 +13,7 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
       <Link href={`/product/${product.slug}`} className="block">
         <div className="relative aspect-[3/4] overflow-hidden bg-line">
           {image ? (
-            <Image
+            <SafeImage
               src={image.url}
               alt={image.alt || product.name}
               fill

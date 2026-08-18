@@ -40,22 +40,57 @@ export function friendlySaveError(message?: string) {
   if (text.includes("network") || text.includes("fetch")) {
     return "The connection dropped for a moment. Please try again.";
   }
+  if (text.includes("json") || text.includes("unexpected token") || text.includes("not valid")) {
+    return "That did not go through cleanly. Please try again in a moment — nothing else has been lost.";
+  }
   return "We couldn’t save that just now. Please try again in a moment — nothing else has been lost.";
 }
 
 export function friendlyUploadError(message?: string) {
   const text = (message ?? "").toLowerCase();
-  if (text.includes("choose a photo")) {
+  if (
+    text.includes("request entity") ||
+    text.includes("too large") ||
+    text.includes("payload") ||
+    text.includes("413") ||
+    text.includes("10mb") ||
+    text.includes("8mb") ||
+    text.includes("file size") ||
+    text.includes("maximum size") ||
+    text.includes("exceed")
+  ) {
+    return "That photo is a little large. Please keep it under 10MB.";
+  }
+  if (text.includes("choose a photo") || text.includes("select a file") || text.includes("empty")) {
     return "Please choose a photo to add.";
   }
+  if (
+    text.includes("not an image") ||
+    text.includes("image type") ||
+    text.includes("mime") ||
+    text.includes("content type") ||
+    text.includes("unsupported") ||
+    text.includes("invalid type")
+  ) {
+    return "Please choose a photo. Any image from your phone or computer will do.";
+  }
   if (text.includes("jpg") || text.includes("png") || text.includes("webp") || text.includes("type")) {
-    return "Please use a JPG, PNG or WEBP photo.";
+    return "Please choose a photo. Any image from your phone or computer will do.";
   }
-  if (text.includes("8mb") || text.includes("size") || text.includes("too large")) {
-    return "That photo is a little large. Please keep it under 8MB.";
-  }
-  if (text.includes("sign in")) {
+  if (text.includes("sign in") || text.includes("not authenticated") || text.includes("jwt") || text.includes("unauthorized")) {
     return "Please sign in again, then add the photo.";
+  }
+  if (text.includes("bucket")) {
+    return "That photograph could not be stored just now. Please try again in a moment.";
+  }
+  if (text.includes("row-level") || text.includes("policy") || text.includes("permission") || text.includes("not allowed")) {
+    return "This account cannot add photos just now. Please sign in again, or ask for catalogue access.";
+  }
+  if (text.includes("network") || text.includes("fetch") || text.includes("failed to fetch")) {
+    return "The connection dropped for a moment. Please try the photo again.";
+  }
+  if (text.includes("json") || text.includes("unexpected token") || text.includes("not valid json") || text.includes("<!doctype") || text.includes("<html")) {
+    return "That photo did not go through. Please keep it under 10MB and try again.";
   }
   return "We couldn’t add that photo just now. Please try another picture, or try again in a moment.";
 }

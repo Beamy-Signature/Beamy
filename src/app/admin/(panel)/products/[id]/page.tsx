@@ -19,7 +19,7 @@ export default async function EditProductPage({
 
   return (
     <div>
-      <AdminPageHeader title="Edit design" description="Update this piece. Changes appear on the website automatically." />
+      <AdminPageHeader title="Edit design" description="Update this piece whenever you like. Save to send the changes to the website. Hide it if you need it off the public pages for a while." />
       <div className="mt-8">
         <ProductForm
           product={product}

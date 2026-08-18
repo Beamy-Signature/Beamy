@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { WhatsAppCta } from "@/components/site/WhatsAppCta";
-import { getSiteSettings } from "@/lib/data/queries";
+import { SafeImage } from "@/components/site/SafeImage";
+import { getGalleryImages, getHeroImages, getSiteSettings } from "@/lib/data/queries";
 
 export const metadata: Metadata = {
   title: "About",
@@ -10,8 +10,13 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const settings = await getSiteSettings();
+  const [settings, heroImages, gallery] = await Promise.all([
+    getSiteSettings(),
+    getHeroImages(),
+    getGalleryImages(),
+  ]);
   const paragraphs = settings.about_long.split("\n").filter((line) => line.trim());
+  const banner = heroImages[0] ?? gallery[0];
 
   return (
     <>
@@ -24,15 +29,17 @@ export default async function AboutPage() {
           </p>
         </div>
       </section>
-      <section className="relative h-[50vh] min-h-[320px] bg-ink">
-        <Image
-          src="https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?auto=format&fit=crop&w=2000&q=80"
-          alt="BEAMY tailoring"
-          fill
-          className="object-cover opacity-80"
-          sizes="100vw"
-        />
-      </section>
+      {banner ? (
+        <section className="relative h-[50vh] min-h-[320px] bg-ink">
+          <SafeImage
+            src={banner.url}
+            alt={banner.alt}
+            fill
+            className="object-cover opacity-80"
+            sizes="100vw"
+          />
+        </section>
+      ) : null}
       <section className="px-5 py-16 md:px-8 md:py-24">
         <div className="mx-auto max-w-3xl space-y-6 text-base leading-8 text-foreground/90">
           {paragraphs.map((paragraph) => (

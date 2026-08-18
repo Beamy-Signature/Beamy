@@ -24,6 +24,7 @@ export default async function ForgotPasswordPage({
         <form action={forgotPasswordAction} className="mt-8 space-y-4">
           <label className="block text-sm">
             Email
+            <span className="mt-1 block text-xs leading-5 text-muted">The email for your catalogue account.</span>
             <input name="email" type="email" required className={authInputClass} />
           </label>
           {error ? <p className="text-sm text-gold">{error}</p> : null}

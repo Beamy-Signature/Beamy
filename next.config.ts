@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "10mb",
     },
+    proxyClientMaxBodySize: "10mb",
   },
   images: {
     unoptimized: process.env.NODE_ENV === "development",
@@ -21,7 +22,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "*.supabase.co",
+        hostname: "**.supabase.co",
       },
     ],
   },

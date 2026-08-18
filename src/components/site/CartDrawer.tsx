@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { SafeImage } from "@/components/site/SafeImage";
 import { useCart } from "@/components/site/CartProvider";
 import { cartTotals } from "@/lib/checkout";
 import { formatNaira, formatPrice } from "@/lib/format";
@@ -40,7 +40,7 @@ export function CartDrawer() {
                 <li key={item.productId} className="flex gap-4">
                   <div className="relative h-24 w-20 shrink-0 overflow-hidden bg-line">
                     {item.image ? (
-                      <Image src={item.image} alt={item.name} fill className="object-cover" sizes="80px" />
+                      <SafeImage src={item.image} alt={item.name} fill className="object-cover" sizes="80px" />
                     ) : null}
                   </div>
                   <div className="min-w-0 flex-1">

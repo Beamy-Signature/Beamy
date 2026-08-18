@@ -44,9 +44,16 @@ export default async function LoginPage({
             <input type="hidden" name="next" value={next || "/admin"} />
             <label className="block text-sm">
               Email
+              <span className="mt-1 block text-xs leading-5 text-muted">The email you use for this catalogue.</span>
               <input name="email" type="email" required autoComplete="email" className={authInputClass} />
             </label>
-            <PasswordField name="password" label="Password" required autoComplete="current-password" />
+            <PasswordField
+              name="password"
+              label="Password"
+              description="Tap the eye if you would like to see what you are typing."
+              required
+              autoComplete="current-password"
+            />
             {error ? <p className="text-sm text-gold">{error}</p> : null}
             <button type="submit" className="admin-primary w-full">
               Sign in

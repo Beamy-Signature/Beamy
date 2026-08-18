@@ -2,38 +2,44 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { AdminPopup } from "@/components/admin/AdminPopup";
 import { ADMIN_NOTICES, isAdminNotice } from "@/lib/admin/notices";
+import { ADMIN_POPUP_EVENT, type AdminPopupDetail } from "@/lib/admin/popup";
 
 function AdminNoticeInner() {
   const params = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   const key = params.get("notice");
-  const [message, setMessage] = useState("");
-  const [open, setOpen] = useState(false);
+  const [popup, setPopup] = useState<AdminPopupDetail | null>(null);
 
   useEffect(() => {
     if (!isAdminNotice(key)) return;
-    setMessage(ADMIN_NOTICES[key]);
-    setOpen(true);
+    setPopup(ADMIN_NOTICES[key]);
     const next = new URLSearchParams(params.toString());
     next.delete("notice");
     const query = next.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
-    const timer = window.setTimeout(() => setOpen(false), 4500);
-    return () => window.clearTimeout(timer);
   }, [key, params, pathname, router]);
 
-  if (!open || !message) return null;
+  useEffect(() => {
+    function onPopup(event: Event) {
+      const detail = (event as CustomEvent<AdminPopupDetail>).detail;
+      if (!detail?.title) return;
+      setPopup(detail);
+    }
+    window.addEventListener(ADMIN_POPUP_EVENT, onPopup);
+    return () => window.removeEventListener(ADMIN_POPUP_EVENT, onPopup);
+  }, []);
+
+  if (!popup) return null;
 
   return (
-    <div className="admin-toast" role="status">
-      <p className="font-serif text-xl text-ink">Done</p>
-      <p className="mt-2 text-sm leading-6 text-muted">{message}</p>
-      <button type="button" className="mt-4 text-sm underline" onClick={() => setOpen(false)}>
-        Close
-      </button>
-    </div>
+    <AdminPopup
+      title={popup.title}
+      message={popup.message}
+      onClose={() => setPopup(null)}
+    />
   );
 }
 

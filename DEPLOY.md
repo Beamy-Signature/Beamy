@@ -248,7 +248,7 @@ Do these with the owner, on her phone:
 
 1. Log into `/admin/login`.
 2. **Site settings** — confirm phone, WhatsApp (`08101657472`), email, Instagram, address.
-3. **Homepage images** — replace mock photos with real BEAMY pictures.
+3. **Homepage images** — replace mock photos with real BEAMY pictures. Run `supabase/remove-stock-images.sql` once so broken Unsplash mocks leave the live catalogue.
 4. **Designs** — unpublish or delete mock pieces, then **Add New Design** with real names, prices and photos.
 5. **Testimonials** — replace mock quotes with real client notes, or unpublish them.
 6. Send herself a test WhatsApp order from the bag checkout.

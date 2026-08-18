@@ -270,6 +270,10 @@ body {
   }
 }
 
+.admin-popup {
+  animation: admin-page-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 .admin-toast {
   position: fixed;
   right: 1.25rem;
@@ -289,7 +293,8 @@ body {
   .admin-nav-item,
   .admin-stat,
   .admin-primary,
-  .admin-toast {
+  .admin-toast,
+  .admin-popup {
     animation: none;
     transform: none;
     transition: none;

@@ -29,7 +29,7 @@ export default async function AdminProductsPage({
     <div>
       <AdminPageHeader
         title="All Designs"
-        description="Publish, feature or edit pieces. Changes appear on the website automatically."
+        description="Every piece in the house. Publish to show it on the website, feature it on the homepage, or edit the photographs and price."
         action={
           <Link href="/admin/products/new" className="admin-primary">
             Add New Design
@@ -40,16 +40,16 @@ export default async function AdminProductsPage({
         <input
           name="q"
           defaultValue={q}
-          placeholder="Search designs"
+          placeholder="Search by design name"
           className="min-w-0 w-full flex-1 border border-line bg-paper px-3 py-2.5 text-sm sm:min-w-[200px]"
         />
         <select name="status" defaultValue={status} className="border border-line bg-paper px-3 py-2.5 text-sm">
-          <option value="all">All</option>
-          <option value="published">Published</option>
+          <option value="all">All designs</option>
+          <option value="published">On the website</option>
           <option value="draft">Drafts</option>
-          <option value="featured">Featured</option>
+          <option value="featured">On the homepage</option>
         </select>
-        <button className="border border-ink px-4 py-2.5 text-sm">Filter</button>
+        <button className="border border-ink px-4 py-2.5 text-sm">Show</button>
       </form>
       <div className="mt-8 divide-y divide-line border border-line bg-paper">
         {filtered.length === 0 ? (
@@ -60,14 +60,14 @@ export default async function AdminProductsPage({
               <div>
                 <p className="font-medium">{product.name}</p>
                 <p className="text-sm text-muted">
-                  {product.category?.name ?? "Uncategorised"} · {formatPrice(product.price, product.price_display_mode)}
+                  {product.category?.name ?? "No category"} · {formatPrice(product.price, product.price_display_mode)}
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <span className={`px-2 py-1 text-xs ${product.published ? "bg-ink text-paper" : "bg-line"}`}>
-                  {product.published ? "Published" : "Draft"}
+                  {product.published ? "On the website" : "Draft"}
                 </span>
-                {product.featured ? <span className="bg-gold/30 px-2 py-1 text-xs">Featured</span> : null}
+                {product.featured ? <span className="bg-gold/30 px-2 py-1 text-xs">On homepage</span> : null}
                 <Link href={`/admin/products/${product.id}`} className="underline">
                   Edit
                 </Link>
@@ -75,13 +75,13 @@ export default async function AdminProductsPage({
                   <input type="hidden" name="id" value={product.id} />
                   <input type="hidden" name="field" value="published" />
                   <input type="hidden" name="value" value={product.published ? "false" : "true"} />
-                  <button className="underline">{product.published ? "Unpublish" : "Publish"}</button>
+                  <button className="underline">{product.published ? "Hide from website" : "Show on website"}</button>
                 </form>
                 <form action={toggleProductFlag}>
                   <input type="hidden" name="id" value={product.id} />
                   <input type="hidden" name="field" value="featured" />
                   <input type="hidden" name="value" value={product.featured ? "false" : "true"} />
-                  <button className="underline">{product.featured ? "Unfeature" : "Feature"}</button>
+                  <button className="underline">{product.featured ? "Take off homepage" : "Show on homepage"}</button>
                 </form>
                 <ConfirmDelete
                   action={deleteProductAction}

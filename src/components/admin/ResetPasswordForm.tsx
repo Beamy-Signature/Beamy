@@ -68,7 +68,7 @@ export function ResetPasswordForm() {
       setError("We could not update that password just now. Please request a new reset email.");
       return;
     }
-    router.replace("/admin?notice=saved");
+    router.replace("/admin?notice=password-saved");
     router.refresh();
   }
 
@@ -97,8 +97,22 @@ export function ResetPasswordForm() {
     <AuthShell title="New password">
       <p className="mt-4 text-sm text-muted">Choose a password you will remember for the catalogue.</p>
       <form onSubmit={onSubmit} className="mt-8 space-y-4">
-        <PasswordField name="password" label="New password" required minLength={8} autoComplete="new-password" />
-        <PasswordField name="confirm" label="Confirm password" required minLength={8} autoComplete="new-password" />
+        <PasswordField
+          name="password"
+          label="New password"
+          description="At least 8 characters. Choose something you will remember."
+          required
+          minLength={8}
+          autoComplete="new-password"
+        />
+        <PasswordField
+          name="confirm"
+          label="Confirm password"
+          description="Type the same password again."
+          required
+          minLength={8}
+          autoComplete="new-password"
+        />
         {error ? <p className="text-sm text-gold">{error}</p> : null}
         <button type="submit" disabled={busy} className="admin-primary w-full">
           {busy ? "Saving…" : "Save password"}

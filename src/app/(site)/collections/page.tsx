@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/site/Reveal";
+import { SafeImage } from "@/components/site/SafeImage";
 import { getCollections } from "@/lib/data/queries";
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default async function CollectionsPage() {
                 className="group relative block min-h-[380px] overflow-hidden bg-ink text-paper"
               >
                 {collection.image_url ? (
-                  <Image
+                  <SafeImage
                     src={collection.image_url}
                     alt={collection.name}
                     fill

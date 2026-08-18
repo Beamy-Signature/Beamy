@@ -9,12 +9,14 @@ const inputClass =
 export function PasswordField({
   name,
   label,
+  description,
   required,
   minLength,
   autoComplete,
 }: {
   name: string;
   label: string;
+  description?: string;
   required?: boolean;
   minLength?: number;
   autoComplete?: string;
@@ -24,6 +26,7 @@ export function PasswordField({
   return (
     <label className="block text-sm">
       {label}
+      {description ? <span className="mt-1 block text-xs leading-5 text-muted">{description}</span> : null}
       <span className="relative mt-2 block">
         <input
           name={name}

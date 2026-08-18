@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { SafeImage } from "@/components/site/SafeImage";
 import { useState } from "react";
 import type { ProductImage } from "@/lib/types";
 
@@ -21,7 +21,7 @@ export function ProductGallery({
   return (
     <div>
       <div className="relative aspect-[4/5] overflow-hidden bg-line">
-        <Image
+        <SafeImage
           src={current.url}
           alt={current.alt || name}
           fill
@@ -41,7 +41,7 @@ export function ProductGallery({
                 index === active ? "ring-1 ring-gold opacity-100" : "opacity-70 hover:opacity-100"
               }`}
             >
-              <Image
+              <SafeImage
                 src={image.url}
                 alt={image.alt || `${name} ${index + 1}`}
                 fill

@@ -1,3 +1,4 @@
+import { AdminField } from "@/components/admin/AdminField";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { saveSettingsAction } from "@/lib/admin/actions";
 import { getSiteSettings } from "@/lib/data/queries";
@@ -8,53 +9,79 @@ export default async function AdminSettingsPage() {
   return (
     <div>
       <AdminPageHeader
-        title="Site settings"
-        description="Phone, WhatsApp, email and homepage text — so you never need to edit code."
+        title="Website details"
+        description="Phone, WhatsApp, email and homepage wording — so you never need to edit the website yourself."
       />
-      <form action={saveSettingsAction} className="mt-8 max-w-3xl space-y-4">
+      <form action={saveSettingsAction} className="mt-8 max-w-3xl space-y-5">
         <input type="hidden" name="id" value={settings.id} />
-        <Field label="Phone" name="phone" defaultValue={settings.phone} />
-        <Field label="WhatsApp number" name="whatsapp_number" defaultValue={settings.whatsapp_number} />
-        <Field label="Email" name="email" type="email" defaultValue={settings.email} />
-        <Field label="Instagram — @Beamy_fashion" name="instagram_fashion" defaultValue={settings.instagram_fashion} />
-        <Field label="Instagram — @Beamy_woman" name="instagram_woman" defaultValue={settings.instagram_woman} />
-        <Field label="Address" name="address" defaultValue={settings.address} />
-        <Field label="Homepage headline" name="hero_headline" defaultValue={settings.hero_headline} />
-        <label className="block">
-          <span className="mb-2 block text-sm">Homepage supporting text</span>
+        <AdminField label="Phone" description="The number shown on the contact page." as="label">
+          <input name="phone" defaultValue={settings.phone} className={inputClass} />
+        </AdminField>
+        <AdminField
+          label="WhatsApp number"
+          description="Used for Order on WhatsApp. Include the country code if you can, for example 08101657472."
+          as="label"
+        >
+          <input name="whatsapp_number" defaultValue={settings.whatsapp_number} className={inputClass} />
+        </AdminField>
+        <AdminField label="Email" description="The address visitors write to." as="label">
+          <input name="email" type="email" defaultValue={settings.email} className={inputClass} />
+        </AdminField>
+        <AdminField
+          label="Instagram — fashion"
+          description="Your main fashion account, shown as @Beamy_fashion."
+          as="label"
+        >
+          <input name="instagram_fashion" defaultValue={settings.instagram_fashion} className={inputClass} />
+        </AdminField>
+        <AdminField
+          label="Instagram — woman"
+          description="Your womenswear account, shown as @Beamy_woman."
+          as="label"
+        >
+          <input name="instagram_woman" defaultValue={settings.instagram_woman} className={inputClass} />
+        </AdminField>
+        <AdminField label="Address" description="Where the house is based, shown on the contact page." as="label">
+          <input name="address" defaultValue={settings.address} className={inputClass} />
+        </AdminField>
+        <AdminField
+          label="Homepage headline"
+          description="The large line at the top of the website."
+          as="label"
+        >
+          <input name="hero_headline" defaultValue={settings.hero_headline} className={inputClass} />
+        </AdminField>
+        <AdminField
+          label="Homepage supporting text"
+          description="A short line under the headline."
+          as="label"
+        >
           <textarea name="hero_subheadline" rows={3} defaultValue={settings.hero_subheadline} className={inputClass} />
-        </label>
-        <label className="block">
-          <span className="mb-2 block text-sm">Short about text</span>
+        </AdminField>
+        <AdminField
+          label="Short about text"
+          description="A brief introduction used on the homepage."
+          as="label"
+        >
           <textarea name="about_short" rows={4} defaultValue={settings.about_short} className={inputClass} />
-        </label>
-        <label className="block">
-          <span className="mb-2 block text-sm">Full about text</span>
+        </AdminField>
+        <AdminField
+          label="Full about text"
+          description="The longer story on the About page."
+          as="label"
+        >
           <textarea name="about_long" rows={10} defaultValue={settings.about_long} className={inputClass} />
-        </label>
-        <Field label="Footer line" name="footer_tagline" defaultValue={settings.footer_tagline} />
-        <button className="admin-primary">Save settings</button>
+        </AdminField>
+        <AdminField
+          label="Footer line"
+          description="A short line at the bottom of every page."
+          as="label"
+        >
+          <input name="footer_tagline" defaultValue={settings.footer_tagline} className={inputClass} />
+        </AdminField>
+        <button className="admin-primary">Save website details</button>
       </form>
     </div>
-  );
-}
-
-function Field({
-  label,
-  name,
-  defaultValue,
-  type = "text",
-}: {
-  label: string;
-  name: string;
-  defaultValue: string;
-  type?: string;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-2 block text-sm">{label}</span>
-      <input name={name} type={type} defaultValue={defaultValue} className={inputClass} />
-    </label>
   );
 }
 

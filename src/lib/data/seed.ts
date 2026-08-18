@@ -81,7 +81,7 @@ export const collections: Collection[] = [
     name: "Men's Collection",
     slug: "men",
     description: "Structured tailoring for work, weddings and refined everyday wear.",
-    image_url: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?auto=format&fit=crop&w=1600&q=80",
+    image_url: null,
     gender: "men",
     published: true,
     sort_order: 1,
@@ -93,7 +93,7 @@ export const collections: Collection[] = [
     name: "Women's Collection",
     slug: "women",
     description: "Contemporary silhouettes with a clean, executive finish.",
-    image_url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1600&q=80",
+    image_url: null,
     gender: "women",
     published: true,
     sort_order: 2,
@@ -105,7 +105,7 @@ export const collections: Collection[] = [
     name: "2026 Executive Collection",
     slug: "2026-executive",
     description: "A unisex edit of BEAMY's most considered boardroom and occasion pieces.",
-    image_url: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1600&q=80",
+    image_url: null,
     gender: "unisex",
     published: true,
     sort_order: 3,
@@ -143,10 +143,7 @@ export const products: ProductWithRelations[] = [
     updated_at: now,
     category: categories[0],
     collection: collections[0],
-    images: [
-      img("i1000001-1", "c1000001-0000-4000-8000-000000000001", "https://images.unsplash.com/photo-1594938291221-94f18cbb47e8?auto=format&fit=crop&w=1600&q=80", "BEAMY Signature Black Suit"),
-      img("i1000001-2", "c1000001-0000-4000-8000-000000000001", "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=1600&q=80", "Signature black suit detail"),
-    ],
+    images: [],
   },
   {
     id: "c1000001-0000-4000-8000-000000000002",
@@ -462,13 +459,17 @@ export const products: ProductWithRelations[] = [
   },
 ];
 
+for (const product of products) {
+  product.images = [];
+}
+
 export const testimonials: Testimonial[] = [
   {
     id: "d1000001-0000-4000-8000-000000000001",
     customer_name: "Adaeze Okonkwo",
     quote:
       "The navy suit arrived exactly as discussed — clean, structured, and I have not stopped receiving compliments at chambers.",
-    image_url: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=600&q=80",
+    image_url: null,
     role: "Corporate lawyer",
     location: "Lagos",
     published: true,
@@ -480,7 +481,7 @@ export const testimonials: Testimonial[] = [
     customer_name: "Tunde Adebayo",
     quote:
       "BEAMY understood the brief for my wedding agbada without turning it loud. The finish was precise. I felt like myself, only sharper.",
-    image_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
+    image_url: null,
     role: "Entrepreneur",
     location: "Victoria Island",
     published: true,
@@ -492,7 +493,7 @@ export const testimonials: Testimonial[] = [
     customer_name: "Chioma Eze",
     quote:
       "I needed a look that could go from the office to a dinner. The two-piece was considered, comfortable and very well made.",
-    image_url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80",
+    image_url: null,
     role: "Brand director",
     location: "Ikoyi",
     published: true,
@@ -504,7 +505,7 @@ export const testimonials: Testimonial[] = [
     customer_name: "Ibrahim Musa",
     quote:
       "Measurements were taken properly, the cloth recommendation was honest, and the senator was ready when they said it would be.",
-    image_url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
+    image_url: null,
     role: "Groom",
     location: "Lekki",
     published: true,
@@ -513,40 +514,8 @@ export const testimonials: Testimonial[] = [
   },
 ];
 
-export const galleryImages: GalleryImage[] = [
-  { id: "g1", url: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?auto=format&fit=crop&w=1400&q=80", alt: "BEAMY tailored suit", sort_order: 1, published: true },
-  { id: "g2", url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1400&q=80", alt: "BEAMY women's corporate look", sort_order: 2, published: true },
-  { id: "g3", url: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=80", alt: "BEAMY contemporary piece", sort_order: 3, published: true },
-  { id: "g4", url: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=1400&q=80", alt: "BEAMY menswear detail", sort_order: 4, published: true },
-  { id: "g5", url: "https://images.unsplash.com/photo-1539109136881-3be8266af6d0?auto=format&fit=crop&w=1400&q=80", alt: "BEAMY editorial look", sort_order: 5, published: true },
-  { id: "g6", url: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1400&q=80", alt: "BEAMY executive tailoring", sort_order: 6, published: true },
-];
+export const galleryImages: GalleryImage[] = [];
 
-export const heroImages = [
-  {
-    url: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=2000&q=80",
-    alt: "BEAMY executive tailoring",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=2000&q=80",
-    alt: "BEAMY women's corporate suit",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?auto=format&fit=crop&w=2000&q=80",
-    alt: "BEAMY bespoke menswear",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=2000&q=80",
-    alt: "BEAMY contemporary silhouette",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=2000&q=80",
-    alt: "BEAMY tailored jacket",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1539109136881-3be8266af6d0?auto=format&fit=crop&w=2000&q=80",
-    alt: "BEAMY editorial look",
-  },
-];
+export const heroImages: { url: string; alt: string }[] = [];
 
-export const heroImage = heroImages[0]!.url;
+export const heroImage = "";

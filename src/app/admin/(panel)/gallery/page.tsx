@@ -10,7 +10,7 @@ export default async function GalleryPage() {
     <div>
       <AdminPageHeader
         title="Lookbook gallery"
-        description="These photographs sit in the grid on the homepage, below Why BEAMY. Add, hide or reorder them here."
+        description="These photographs sit in the grid on the homepage, below Why BEAMY. Add, hide or reorder them here, then save so the website stays in step."
       />
       <div className="mt-8">
         <CmsImageList
@@ -19,6 +19,8 @@ export default async function GalleryPage() {
           folder="gallery"
           emptyCopy="The lookbook is waiting for photographs. Add a few above, then save."
           saveLabel="Save gallery"
+          photoLabel="Lookbook photographs"
+          photoDescription="These sit in the grid on the homepage. Any image from your phone or computer, up to 10MB each."
         />
       </div>
     </div>

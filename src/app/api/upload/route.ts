@@ -2,18 +2,21 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 import { friendlyUploadError } from "@/lib/friendly-error";
+import {
+  bucketFor,
+  contentTypeFor,
+  filenameFor,
+  isImageFile,
+  MAX_UPLOAD_BYTES,
+  storagePathFor,
+} from "@/lib/admin/upload";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export const runtime = "nodejs";
 
-const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
-
-function bucketFor(folder: string) {
-  if (folder === "collections") return "collection-images";
-  if (folder === "testimonials") return "testimonial-images";
-  if (folder === "hero" || folder === "gallery") return "hero-images";
-  return "product-images";
+function jsonError(message: string, status: number) {
+  return NextResponse.json({ error: friendlyUploadError(message) }, { status });
 }
 
 export async function POST(request: Request) {
@@ -21,25 +24,25 @@ export async function POST(request: Request) {
   try {
     formData = await request.formData();
   } catch {
-    return NextResponse.json({ error: friendlyUploadError("Choose a photo.") }, { status: 400 });
+    return jsonError("That photo is a little large. Please keep it under 10MB.", 413);
   }
 
   const file = formData.get("file");
   const folder = String(formData.get("folder") || "designs");
 
   if (!(file instanceof File) || file.size === 0) {
-    return NextResponse.json({ error: friendlyUploadError("Choose a photo.") }, { status: 400 });
+    return jsonError("Choose a photo.", 400);
   }
-  if (!ALLOWED.includes(file.type)) {
-    return NextResponse.json({ error: friendlyUploadError("Use a JPG, PNG or WEBP photo.") }, { status: 400 });
+  if (!isImageFile(file)) {
+    return jsonError("Please choose a photo.", 400);
   }
-  if (file.size > 8 * 1024 * 1024) {
-    return NextResponse.json({ error: friendlyUploadError("Keep photos under 8MB.") }, { status: 400 });
+  if (file.size > MAX_UPLOAD_BYTES) {
+    return jsonError("Keep photos under 10MB.", 400);
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-  const filename = `${Date.now()}-${crypto.randomUUID()}.${ext}`;
-  const storagePath = folder === "gallery" ? `gallery/${filename}` : filename;
+  const filename = filenameFor(file);
+  const storagePath = storagePathFor(folder, filename);
+  const contentType = contentTypeFor(file);
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
@@ -47,15 +50,15 @@ export async function POST(request: Request) {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
-      return NextResponse.json({ error: friendlyUploadError("Sign in to upload.") }, { status: 401 });
+      return jsonError("Sign in to upload.", 401);
     }
     const bucket = bucketFor(folder);
     const { error } = await supabase.storage.from(bucket).upload(storagePath, file, {
-      contentType: file.type,
+      contentType,
       upsert: false,
     });
     if (error) {
-      return NextResponse.json({ error: friendlyUploadError(error.message) }, { status: 500 });
+      return jsonError(error.message, 500);
     }
     const { data } = supabase.storage.from(bucket).getPublicUrl(storagePath);
     return NextResponse.json({ url: data.publicUrl });

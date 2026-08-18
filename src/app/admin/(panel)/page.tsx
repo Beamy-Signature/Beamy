@@ -6,17 +6,17 @@ export default async function AdminDashboardPage() {
   const stats = await getDashboardStats();
   const cards = [
     { label: "Total designs", value: stats.totalProducts, href: "/admin/products" },
-    { label: "Published", value: stats.publishedProducts, href: "/admin/products?status=published" },
+    { label: "On the website", value: stats.publishedProducts, href: "/admin/products?status=published" },
     { label: "Drafts", value: stats.draftProducts, href: "/admin/products?status=draft" },
     { label: "Collections", value: stats.collections, href: "/admin/collections" },
-    { label: "Featured", value: stats.featuredProducts, href: "/admin/products?status=featured" },
+    { label: "On the homepage", value: stats.featuredProducts, href: "/admin/products?status=featured" },
   ];
 
   return (
     <div>
       <AdminPageHeader
         title="Dashboard"
-        description="Add designs, manage collections, and keep the website up to date."
+        description="A quiet overview of the house. Add a new design, open a collection, or tap a number to jump straight there."
         action={
           <Link href="/admin/products/new" className="admin-primary">
             Add New Design

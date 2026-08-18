@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AdminField } from "@/components/admin/AdminField";
 import { PhotoUploader } from "@/components/admin/PhotoUploader";
 import type { Category, Collection, ProductWithRelations } from "@/lib/types";
 
@@ -22,35 +23,56 @@ export function ProductForm({
   return (
     <form action={action} className="max-w-3xl space-y-6">
       {product ? <input type="hidden" name="id" value={product.id} /> : null}
-      <Field label="Design name">
+      <AdminField
+        label="Design name"
+        description="The name shoppers will see on the website and in WhatsApp messages."
+        as="label"
+      >
         <input name="name" required defaultValue={product?.name} className={inputClass} />
-      </Field>
+      </AdminField>
       <PhotoUploader
         folder="designs"
         multiple
         label="Photos"
+        description="Add as many photographs as you like. Any image from your phone or computer, up to 10MB each."
         value={product?.images.map((image) => ({
           id: image.id,
           url: image.url,
           alt: image.alt ?? "",
         }))}
       />
-      <Field label="Description">
+      <AdminField
+        label="Description"
+        description="A short story of the piece — fabric, occasion, or how it is made."
+        as="label"
+      >
         <textarea name="description" rows={5} required defaultValue={product?.description} className={inputClass} />
-      </Field>
+      </AdminField>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Price (Naira)">
+        <AdminField
+          label="Price (Naira)"
+          description="Leave blank if the price is on request."
+          as="label"
+        >
           <input name="price" type="number" min="0" defaultValue={product?.price ?? ""} className={inputClass} />
-        </Field>
-        <Field label="Price display">
+        </AdminField>
+        <AdminField
+          label="How the price appears"
+          description="Choose a fixed amount, a starting price, or ‘price on request’."
+          as="label"
+        >
           <select name="price_display_mode" defaultValue={product?.price_display_mode ?? "fixed"} className={inputClass}>
             <option value="fixed">Fixed price</option>
             <option value="from">Starting from</option>
             <option value="on_request">Price on request</option>
           </select>
-        </Field>
+        </AdminField>
       </div>
-      <Field label="For">
+      <AdminField
+        label="For"
+        description="Whether this piece is for men, women, or both."
+        as="label"
+      >
         <select
           name="gender"
           value={gender}
@@ -61,8 +83,12 @@ export function ProductForm({
           <option value="women">Women</option>
           <option value="unisex">Unisex</option>
         </select>
-      </Field>
-      <Field label="Collection">
+      </AdminField>
+      <AdminField
+        label="Collection"
+        description="Where this piece lives on the website. Men and Women are always available."
+        as="label"
+      >
         <select
           name="collection_id"
           defaultValue={product?.collection_id ?? fallbackCollection}
@@ -76,21 +102,35 @@ export function ProductForm({
             </option>
           ))}
         </select>
-      </Field>
-      <div className="flex gap-6">
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="published" defaultChecked={product?.published ?? true} />
-          Published
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="featured" defaultChecked={product?.featured ?? false} />
-          Show on homepage
-        </label>
+      </AdminField>
+      <div className="space-y-4">
+        <AdminField
+          label="Show on the website"
+          description="Tick this to make the design live. Untick to keep it as a private draft."
+        >
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="published" defaultChecked={product?.published ?? true} />
+            Published
+          </label>
+        </AdminField>
+        <AdminField
+          label="Show on the homepage"
+          description="Featured designs appear in the highlighted row on the homepage."
+        >
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="featured" defaultChecked={product?.featured ?? false} />
+            Feature this design
+          </label>
+        </AdminField>
       </div>
       <details className="text-sm">
         <summary className="cursor-pointer underline">More options</summary>
         <div className="mt-5 space-y-5 border border-line bg-paper p-5">
-          <Field label="Category">
+          <AdminField
+            label="Category"
+            description="Optional grouping inside Men or Women, such as Agbada or Corporate Suits."
+            as="label"
+          >
             <select name="category_id" defaultValue={product?.category_id ?? ""} className={inputClass}>
               <option value="">None</option>
               {categories.map((category) => (
@@ -99,17 +139,33 @@ export function ProductForm({
                 </option>
               ))}
             </select>
-          </Field>
-          <Field label="Additional information">
+          </AdminField>
+          <AdminField
+            label="Additional information"
+            description="Care notes, lead time, or anything else shoppers should know."
+            as="label"
+          >
             <textarea name="additional_info" rows={3} defaultValue={product?.additional_info ?? ""} className={inputClass} />
-          </Field>
-          <Field label="Web address (leave blank to generate)">
+          </AdminField>
+          <AdminField
+            label="Web address"
+            description="Leave blank and we will create one from the design name."
+            as="label"
+          >
             <input name="slug" defaultValue={product?.slug} className={inputClass} />
-          </Field>
-          <Field label="Display order">
+          </AdminField>
+          <AdminField
+            label="Display order"
+            description="Lower numbers appear first in the collection."
+            as="label"
+          >
             <input name="sort_order" type="number" defaultValue={product?.sort_order ?? 0} className={inputClass} />
-          </Field>
-          <Field label="Custom WhatsApp message">
+          </AdminField>
+          <AdminField
+            label="Custom WhatsApp message"
+            description="Leave blank to use the standard order message."
+            as="label"
+          >
             <textarea
               name="whatsapp_message"
               rows={3}
@@ -117,22 +173,13 @@ export function ProductForm({
               placeholder="Leave blank to use the standard order message."
               className={inputClass}
             />
-          </Field>
+          </AdminField>
         </div>
       </details>
       <button type="submit" className="admin-primary">
         Save design
       </button>
     </form>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="mb-2 block text-sm">{label}</span>
-      {children}
-    </label>
   );
 }
 

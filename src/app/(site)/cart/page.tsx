@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { SafeImage } from "@/components/site/SafeImage";
 import { useMemo, useState } from "react";
 import { useCart } from "@/components/site/CartProvider";
 import { useSite } from "@/components/site/SiteProvider";
@@ -49,7 +49,7 @@ export default function CartPage() {
               <li key={item.productId} className="flex gap-5 border-b border-line pb-8">
                 <div className="relative h-32 w-24 shrink-0 overflow-hidden bg-line">
                   {item.image ? (
-                    <Image src={item.image} alt={item.name} fill className="object-cover" sizes="96px" />
+                    <SafeImage src={item.image} alt={item.name} fill className="object-cover" sizes="96px" />
                   ) : null}
                 </div>
                 <div className="flex-1">
@@ -83,12 +83,35 @@ export default function CartPage() {
             Fill this in so BEAMY receives a clear, numbered order with your total.
           </p>
           <div className="mt-6 space-y-4">
-            <Field label="Your name" value={details.name} onChange={(value) => setDetails({ ...details, name: value })} />
-            <Field label="Phone" value={details.phone} onChange={(value) => setDetails({ ...details, phone: value })} />
-            <Field label="Delivery address" value={details.address} onChange={(value) => setDetails({ ...details, address: value })} />
-            <Field label="Occasion / date needed" value={details.occasion} onChange={(value) => setDetails({ ...details, occasion: value })} />
+            <Field
+              label="Your name"
+              description="So we know who the order is for."
+              value={details.name}
+              onChange={(value) => setDetails({ ...details, name: value })}
+            />
+            <Field
+              label="Phone"
+              description="A number we can reach you on, preferably WhatsApp."
+              value={details.phone}
+              onChange={(value) => setDetails({ ...details, phone: value })}
+            />
+            <Field
+              label="Delivery address"
+              description="Where the finished piece should go, if you already know."
+              value={details.address}
+              onChange={(value) => setDetails({ ...details, address: value })}
+            />
+            <Field
+              label="Occasion / date needed"
+              description="A wedding, sitting, or the day you need it by."
+              value={details.occasion}
+              onChange={(value) => setDetails({ ...details, occasion: value })}
+            />
             <label className="block text-sm">
               Notes
+              <span className="mt-1 block text-xs leading-5 text-muted">
+                Measurements, fabric wishes, or anything else we should know.
+              </span>
               <textarea
                 rows={3}
                 value={details.notes}
@@ -120,16 +143,19 @@ export default function CartPage() {
 
 function Field({
   label,
+  description,
   value,
   onChange,
 }: {
   label: string;
+  description?: string;
   value: string;
   onChange: (value: string) => void;
 }) {
   return (
     <label className="block text-sm">
       {label}
+      {description ? <span className="mt-1 block text-xs leading-5 text-muted">{description}</span> : null}
       <input
         value={value}
         onChange={(event) => onChange(event.target.value)}

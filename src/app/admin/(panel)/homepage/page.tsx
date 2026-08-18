@@ -9,7 +9,7 @@ export default async function HomepageImagesPage() {
     <div>
       <AdminPageHeader
         title="Homepage images"
-        description="These photos rotate in the large banner at the top of the website. Add, hide or reorder them here — no code needed."
+        description="These photographs rotate in the large banner at the top of the website. Add as many as you like, hide any you are not ready to show, and save when the order looks right."
       />
       <div className="mt-8">
         <HeroManager images={images} />

@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { HeroSlideshow } from "@/components/site/HeroSlideshow";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Reveal } from "@/components/site/Reveal";
+import { SafeImage } from "@/components/site/SafeImage";
 import { Testimonials } from "@/components/site/Testimonials";
 import { WhatsAppCta } from "@/components/site/WhatsAppCta";
 import {
@@ -31,6 +31,11 @@ export default async function HomePage() {
   );
   const men = collections.find((collection) => collection.slug === "men");
   const women = collections.find((collection) => collection.slug === "women");
+  const storyImage =
+    heroImages[0] ??
+    gallery[0] ??
+    (men?.image_url ? { url: men.image_url, alt: men.name } : null) ??
+    (women?.image_url ? { url: women.image_url, alt: women.name } : null);
 
   return (
     <>
@@ -76,7 +81,7 @@ export default async function HomePage() {
                   className="group relative block min-h-[420px] overflow-hidden bg-ink text-paper md:min-h-[520px]"
                 >
                   {collection!.image_url ? (
-                    <Image
+                    <SafeImage
                       src={collection!.image_url}
                       alt={collection!.name}
                       fill
@@ -124,16 +129,18 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      <section className="grid md:grid-cols-2">
+      <section className={storyImage ? "grid md:grid-cols-2" : ""}>
+        {storyImage ? (
         <div className="relative min-h-[420px] overflow-hidden bg-ink md:min-h-[560px]">
-          <Image
-            src="https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=1600&q=80"
-            alt="BEAMY atelier"
+          <SafeImage
+            src={storyImage.url}
+            alt={storyImage.alt}
             fill
             className="object-cover opacity-80 transition-transform duration-[1200ms] hover:scale-105"
             sizes="50vw"
           />
         </div>
+        ) : null}
         <div className="flex flex-col justify-center px-6 py-16 md:px-14">
           <Reveal>
             <p className="text-[11px] tracking-[0.28em] text-gold uppercase">About BEAMY</p>
@@ -180,7 +187,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-3">
             {gallery.map((image) => (
               <div key={image.id} className="group relative aspect-[4/5] overflow-hidden">
-                <Image
+                <SafeImage
                   src={image.url}
                   alt={image.alt}
                   fill

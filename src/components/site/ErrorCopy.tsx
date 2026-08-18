@@ -9,7 +9,7 @@ export function ErrorCopy({ reset }: { reset: () => void }) {
       <p className="text-[11px] tracking-[0.28em] text-gold uppercase">A moment, please</p>
       <h1 className="editorial-title mt-4 text-4xl md:text-5xl">This page needs a little pause.</h1>
       <p className="mt-4 max-w-md text-muted">
-        Something interrupted the view. Your bag is safe. Please try again, or browse the collections while we settle.
+        Something interrupted the page. Your bag is safe. Please try again, or browse the collections while we settle.
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <button

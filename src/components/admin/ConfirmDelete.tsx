@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AdminPopup } from "@/components/admin/AdminPopup";
 
 export function ConfirmDelete({
   action,
@@ -23,21 +24,19 @@ export function ConfirmDelete({
         {label}
       </button>
       {open ? (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-ink/50 px-5">
-          <div className="w-full max-w-md border border-line bg-paper p-6">
-            <h2 className="font-serif text-2xl">{title}</h2>
-            <p className="mt-3 text-sm leading-6 text-muted">{message}</p>
-            <div className="mt-6 flex justify-end gap-3">
-              <button type="button" className="px-4 py-2 text-sm" onClick={() => setOpen(false)}>
-                Keep this
+        <AdminPopup title={title} message={message} onClose={() => setOpen(false)}>
+          <div className="mt-8 flex flex-wrap justify-end gap-3">
+            <button type="button" className="border border-line px-4 py-2.5 text-sm" onClick={() => setOpen(false)}>
+              Keep this
+            </button>
+            <form action={action}>
+              <input type="hidden" name="id" value={id} />
+              <button className="bg-ink px-4 py-2.5 text-[11px] tracking-[0.16em] text-paper uppercase">
+                {label}
               </button>
-              <form action={action}>
-                <input type="hidden" name="id" value={id} />
-                <button className="bg-red-800 px-4 py-2 text-sm text-white">{label}</button>
-              </form>
-            </div>
+            </form>
           </div>
-        </div>
+        </AdminPopup>
       ) : null}
     </>
   );

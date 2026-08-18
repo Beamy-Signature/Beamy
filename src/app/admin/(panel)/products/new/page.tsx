@@ -11,7 +11,7 @@ export default async function NewProductPage() {
 
   return (
     <div>
-      <AdminPageHeader title="Add New Design" description="Name, photos, price and whether it is for men or women." />
+      <AdminPageHeader title="Add New Design" description="Name the piece, add photographs, set a price, and choose whether it is for men or women. Save when you are ready — you can keep it as a draft until it should appear on the website." />
       <div className="mt-8">
         <ProductForm categories={categories} collections={collections} action={saveProductAction} />
       </div>

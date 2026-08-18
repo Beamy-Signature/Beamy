@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { SafeImage } from "@/components/site/SafeImage";
 import { useState } from "react";
 import type { Testimonial } from "@/lib/types";
 
@@ -22,7 +22,7 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
         <div className="mt-8 flex items-center justify-center gap-4">
           {item.image_url ? (
             <div className="relative h-12 w-12 overflow-hidden">
-              <Image src={item.image_url} alt={item.customer_name} fill className="object-cover" sizes="48px" />
+              <SafeImage src={item.image_url} alt={item.customer_name} fill className="object-cover" sizes="48px" />
             </div>
           ) : null}
           <div className="text-left">

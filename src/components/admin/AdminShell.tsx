@@ -26,8 +26,8 @@ const nav = [
   { href: "/admin/categories", label: "Categories", icon: Tags },
   { href: "/admin/homepage", label: "Homepage images", icon: ImageIcon },
   { href: "/admin/gallery", label: "Lookbook gallery", icon: LayoutGrid },
-  { href: "/admin/testimonials", label: "Testimonials", icon: Quote },
-  { href: "/admin/settings", label: "Site settings", icon: Settings },
+  { href: "/admin/testimonials", label: "Client notes", icon: Quote },
+  { href: "/admin/settings", label: "Website details", icon: Settings },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -101,7 +101,7 @@ export function AdminShell({
       <div className="h-1 shrink-0 bg-gradient-to-r from-gold via-accent to-gold" />
       {!configured ? (
         <div className="shrink-0 bg-ink px-4 py-2.5 text-center text-[11px] leading-5 tracking-wide text-paper">
-          You are working on this computer for now. Designs are saved in a local file on this PC, not the live database. Connect Supabase before going live so every design and photo is kept safe.
+          You are working on this computer for now. Designs are saved here until the live catalogue is connected, so every photograph and piece stays on this PC only.
         </div>
       ) : null}
 

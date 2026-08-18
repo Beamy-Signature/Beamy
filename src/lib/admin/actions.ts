@@ -194,6 +194,7 @@ function productPayload(formData: FormData) {
 }
 
 export async function saveProductAction(formData: FormData) {
+  const isNew = !str(formData, "id");
   const product = productPayload(formData);
   if (!product.collection_id) {
     product.collection_id = await defaultCollectionId(product.gender);
@@ -205,7 +206,7 @@ export async function saveProductAction(formData: FormData) {
     const hydrated = hydrateProduct(product, store);
     store.products = [...store.products.filter((item) => item.id !== product.id), hydrated];
     await writeStore(store);
-    done("/admin/products", "saved");
+    done("/admin/products", isNew ? "design-added" : "design-saved");
   }
 
   const supabase = await requireSupabaseUser();
@@ -229,7 +230,7 @@ export async function saveProductAction(formData: FormData) {
     })),
     { scopeColumn: "product_id", scopeValue: product.id },
   );
-  done("/admin/products", "saved");
+  done("/admin/products", isNew ? "design-added" : "design-saved");
 }
 
 export async function deleteProductAction(formData: FormData) {
@@ -238,12 +239,12 @@ export async function deleteProductAction(formData: FormData) {
     const store = await readStore();
     store.products = store.products.filter((item) => item.id !== id);
     await writeStore(store);
-    done("/admin/products", "removed");
+    done("/admin/products", "design-removed");
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("products").delete().eq("id", id);
   if (error) throw new Error(friendlySaveError(error.message));
-  done("/admin/products", "removed");
+  done("/admin/products", "design-removed");
 }
 
 export async function toggleProductFlag(formData: FormData) {
@@ -274,6 +275,7 @@ export async function toggleProductFlag(formData: FormData) {
 }
 
 export async function saveCollectionAction(formData: FormData) {
+  const isNew = !str(formData, "id");
   const id = str(formData, "id") || crypto.randomUUID();
   const name = str(formData, "name");
   const now = new Date().toISOString();
@@ -299,13 +301,13 @@ export async function saveCollectionAction(formData: FormData) {
     store.collections = [...store.collections.filter((item) => item.id !== id), collection];
     store.products = store.products.map((product) => hydrateProduct(product, store));
     await writeStore(store);
-    done("/admin/collections", "saved");
+    done("/admin/collections", isNew ? "collection-added" : "collection-saved");
   }
 
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("collections").upsert(withoutCreatedAt(collection));
   if (error) throw new Error(friendlySaveError(error.message));
-  done("/admin/collections", "saved");
+  done("/admin/collections", isNew ? "collection-added" : "collection-saved");
 }
 
 export async function deleteCollectionAction(formData: FormData) {
@@ -318,7 +320,7 @@ export async function deleteCollectionAction(formData: FormData) {
     }
     store.collections = store.collections.filter((item) => item.id !== id);
     await writeStore(store);
-    done("/admin/collections", "removed");
+    done("/admin/collections", "collection-removed");
   }
   const supabase = await requireSupabaseUser();
   const { data } = await supabase.from("collections").select("slug").eq("id", id).maybeSingle();
@@ -327,10 +329,11 @@ export async function deleteCollectionAction(formData: FormData) {
   }
   const { error } = await supabase.from("collections").delete().eq("id", id);
   if (error) throw new Error(friendlySaveError(error.message));
-  done("/admin/collections", "removed");
+  done("/admin/collections", "collection-removed");
 }
 
 export async function saveCategoryAction(formData: FormData) {
+  const isNew = !str(formData, "id");
   const id = str(formData, "id") || crypto.randomUUID();
   const name = str(formData, "name");
   const now = new Date().toISOString();
@@ -350,12 +353,12 @@ export async function saveCategoryAction(formData: FormData) {
     store.categories = [...store.categories.filter((item) => item.id !== id), category];
     store.products = store.products.map((product) => hydrateProduct(product, store));
     await writeStore(store);
-    done("/admin/categories", "saved");
+    done("/admin/categories", isNew ? "category-added" : "category-saved");
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("categories").upsert(withoutCreatedAt(category));
   if (error) throw new Error(friendlySaveError(error.message));
-  done("/admin/categories", "saved");
+  done("/admin/categories", isNew ? "category-added" : "category-saved");
 }
 
 export async function deleteCategoryAction(formData: FormData) {
@@ -365,15 +368,16 @@ export async function deleteCategoryAction(formData: FormData) {
     store.categories = store.categories.filter((item) => item.id !== id);
     store.products = store.products.map((product) => hydrateProduct(product, store));
     await writeStore(store);
-    done("/admin/categories", "removed");
+    done("/admin/categories", "category-removed");
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("categories").delete().eq("id", id);
   if (error) throw new Error(friendlySaveError(error.message));
-  done("/admin/categories", "removed");
+  done("/admin/categories", "category-removed");
 }
 
 export async function saveTestimonialAction(formData: FormData) {
+  const isNew = !str(formData, "id");
   const id = str(formData, "id") || crypto.randomUUID();
   const now = new Date().toISOString();
   const testimonial = {
@@ -393,12 +397,12 @@ export async function saveTestimonialAction(formData: FormData) {
     if (existing) testimonial.created_at = existing.created_at;
     store.testimonials = [...store.testimonials.filter((item) => item.id !== id), testimonial];
     await writeStore(store);
-    done("/admin/testimonials", "saved");
+    done("/admin/testimonials", isNew ? "testimonial-added" : "testimonial-saved");
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("testimonials").upsert(withoutCreatedAt(testimonial));
   if (error) throw new Error(friendlySaveError(error.message));
-  done("/admin/testimonials", "saved");
+  done("/admin/testimonials", isNew ? "testimonial-added" : "testimonial-saved");
 }
 
 export async function deleteTestimonialAction(formData: FormData) {
@@ -407,12 +411,12 @@ export async function deleteTestimonialAction(formData: FormData) {
     const store = await readStore();
     store.testimonials = store.testimonials.filter((item) => item.id !== id);
     await writeStore(store);
-    done("/admin/testimonials", "removed");
+    done("/admin/testimonials", "testimonial-removed");
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("testimonials").delete().eq("id", id);
   if (error) throw new Error(friendlySaveError(error.message));
-  done("/admin/testimonials", "removed");
+  done("/admin/testimonials", "testimonial-removed");
 }
 
 export async function saveSettingsAction(formData: FormData) {
@@ -435,22 +439,31 @@ export async function saveSettingsAction(formData: FormData) {
     const store = await readStore();
     store.settings = settings;
     await writeStore(store);
-    done("/admin/settings", "saved");
+    done("/admin/settings", "settings-saved");
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("site_settings").upsert(settings);
   if (error) throw new Error(friendlySaveError(error.message));
-  done("/admin/settings", "saved");
+  done("/admin/settings", "settings-saved");
+}
+
+function parseImageList<T>(payload: string): T[] {
+  try {
+    const items = JSON.parse(payload) as T[];
+    if (!Array.isArray(items)) throw new Error("invalid");
+    return items;
+  } catch {
+    throw new Error(friendlySaveError("We could not save those photographs just now."));
+  }
 }
 
 export async function saveHeroImagesAction(formData: FormData) {
-  const payload = str(formData, "payload");
-  const items = JSON.parse(payload) as HeroImage[];
+  const items = parseImageList<HeroImage>(str(formData, "payload"));
   if (!isSupabaseConfigured()) {
     const store = await readStore();
     store.heroImages = items;
     await writeStore(store);
-    done("/admin/homepage", "saved");
+    done("/admin/homepage", "homepage-saved");
   }
   const supabase = await requireSupabaseUser();
   await upsertAndPrune(
@@ -458,17 +471,16 @@ export async function saveHeroImagesAction(formData: FormData) {
     "hero_images",
     items.map((item) => ({ ...item })),
   );
-  done("/admin/homepage", "saved");
+  done("/admin/homepage", "homepage-saved");
 }
 
 export async function saveGalleryImagesAction(formData: FormData) {
-  const payload = str(formData, "payload");
-  const items = JSON.parse(payload) as GalleryImage[];
+  const items = parseImageList<GalleryImage>(str(formData, "payload"));
   if (!isSupabaseConfigured()) {
     const store = await readStore();
     store.galleryImages = items;
     await writeStore(store);
-    done("/admin/gallery", "saved");
+    done("/admin/gallery", "gallery-saved");
   }
   const supabase = await requireSupabaseUser();
   await upsertAndPrune(
@@ -476,5 +488,5 @@ export async function saveGalleryImagesAction(formData: FormData) {
     "gallery_images",
     items.map((item) => ({ ...item })),
   );
-  done("/admin/gallery", "saved");
+  done("/admin/gallery", "gallery-saved");
 }

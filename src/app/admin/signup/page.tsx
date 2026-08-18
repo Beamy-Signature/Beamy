@@ -29,10 +29,25 @@ export default async function SignupPage({
         <form action={signupAction} className="mt-8 space-y-4">
           <label className="block text-sm">
             Email
+            <span className="mt-1 block text-xs leading-5 text-muted">We will send a confirmation to this address.</span>
             <input name="email" type="email" required autoComplete="email" className={authInputClass} />
           </label>
-          <PasswordField name="password" label="Password" required minLength={8} autoComplete="new-password" />
-          <PasswordField name="confirm" label="Confirm password" required minLength={8} autoComplete="new-password" />
+          <PasswordField
+            name="password"
+            label="Password"
+            description="At least 8 characters. Tap the eye if you would like to see it."
+            required
+            minLength={8}
+            autoComplete="new-password"
+          />
+          <PasswordField
+            name="confirm"
+            label="Confirm password"
+            description="Type the same password again."
+            required
+            minLength={8}
+            autoComplete="new-password"
+          />
           {error ? <p className="text-sm text-gold">{error}</p> : null}
           <button type="submit" className="admin-primary w-full">
             Create account

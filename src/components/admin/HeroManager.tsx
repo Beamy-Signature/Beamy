@@ -10,6 +10,8 @@ export function HeroManager({ images }: { images: HeroImage[] }) {
       folder="hero"
       emptyCopy="The banner is waiting for photographs. Add a few above, then save."
       saveLabel="Save homepage images"
+      photoLabel="Banner photographs"
+      photoDescription="These rotate at the top of the website. Any image from your phone or computer, up to 10MB each."
     />
   );
 }

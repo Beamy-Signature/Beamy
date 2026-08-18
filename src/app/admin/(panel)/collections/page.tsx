@@ -1,3 +1,4 @@
+import { AdminField } from "@/components/admin/AdminField";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { ConfirmDelete } from "@/components/admin/ConfirmDelete";
 import { PhotoUploader } from "@/components/admin/PhotoUploader";
@@ -11,79 +12,153 @@ export default async function AdminCollectionsPage() {
     <div>
       <AdminPageHeader
         title="Collections"
-        description="Create, rename or hide collections. Men and Women stay in place so the website always has a home for those pieces."
+        description="Collections are the groups visitors browse — Men, Women, and any extra stories you add. Create, rename, hide, or photograph them here."
       />
-      <form action={saveCollectionAction} className="mt-8 space-y-3 border border-line bg-paper p-5">
-        <h2 className="font-serif text-2xl">Create collection</h2>
-        <input name="name" required placeholder="Name" className={inputClass} />
-        <textarea name="description" placeholder="Short description" className={inputClass} />
-        <PhotoUploader name="image_url" folder="collections" label="Collection photo" />
-        <select name="gender" className={inputClass} defaultValue="">
-          <option value="">Mixed / unisex</option>
-          <option value="men">Men</option>
-          <option value="women">Women</option>
-          <option value="unisex">Unisex</option>
-        </select>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="published" defaultChecked /> Published
-        </label>
+      <form action={saveCollectionAction} className="mt-8 space-y-4 border border-line bg-paper p-5">
+        <h2 className="font-serif text-2xl">Create a collection</h2>
+        <p className="text-sm leading-6 text-muted">
+          Give it a name people will recognise, a short description, and a photograph if you have one.
+        </p>
+        <AdminField label="Name" description="The title shown on the website, such as Executive 2026." as="label">
+          <input name="name" required placeholder="Name" className={inputClass} />
+        </AdminField>
+        <AdminField
+          label="Description"
+          description="A sentence or two about this group of pieces."
+          as="label"
+        >
+          <textarea name="description" placeholder="Short description" className={inputClass} />
+        </AdminField>
+        <PhotoUploader
+          name="image_url"
+          folder="collections"
+          label="Collection photo"
+          description="The image visitors see when they open this collection. Any photo up to 10MB."
+        />
+        <AdminField
+          label="Who it is for"
+          description="Choose Men, Women, unisex, or mixed if the pieces sit together."
+          as="label"
+        >
+          <select name="gender" className={inputClass} defaultValue="">
+            <option value="">Mixed / unisex</option>
+            <option value="men">Men</option>
+            <option value="women">Women</option>
+            <option value="unisex">Unisex</option>
+          </select>
+        </AdminField>
+        <AdminField
+          label="Show on the website"
+          description="Untick to keep this collection private until you are ready."
+        >
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="published" defaultChecked /> Published
+          </label>
+        </AdminField>
         <details className="text-sm">
           <summary className="cursor-pointer underline">More options</summary>
-          <div className="mt-3 grid gap-3">
-            <input name="slug" placeholder="Web address (optional)" className={inputClass} />
-            <input name="sort_order" type="number" defaultValue={0} className={inputClass} />
+          <div className="mt-3 grid gap-4">
+            <AdminField
+              label="Web address"
+              description="Leave blank and we will create one from the name."
+              as="label"
+            >
+              <input name="slug" placeholder="Optional" className={inputClass} />
+            </AdminField>
+            <AdminField
+              label="Display order"
+              description="Lower numbers appear first on the collections page."
+              as="label"
+            >
+              <input name="sort_order" type="number" defaultValue={0} className={inputClass} />
+            </AdminField>
           </div>
         </details>
-        <button className="admin-primary">
-          Save collection
-        </button>
+        <button className="admin-primary">Create collection</button>
       </form>
       <div className="mt-8 space-y-6">
         {collections.map((collection) => {
           const locked = collection.slug === "men" || collection.slug === "women";
           return (
             <div key={collection.id} className="border border-line bg-paper p-5">
-              <form action={saveCollectionAction} className="grid gap-3 md:grid-cols-2">
+              <form action={saveCollectionAction} className="grid gap-4 md:grid-cols-2">
                 <input type="hidden" name="id" value={collection.id} />
-                <input name="name" defaultValue={collection.name} className={inputClass} />
-                <select name="gender" defaultValue={collection.gender ?? ""} className={inputClass}>
-                  <option value="">Mixed / unisex</option>
-                  <option value="men">Men</option>
-                  <option value="women">Women</option>
-                  <option value="unisex">Unisex</option>
-                </select>
-                <textarea name="description" defaultValue={collection.description ?? ""} className={`${inputClass} md:col-span-2`} />
+                <AdminField label="Name" description="The title shown on the website." as="label">
+                  <input name="name" defaultValue={collection.name} className={inputClass} />
+                </AdminField>
+                <AdminField
+                  label="Who it is for"
+                  description="Men, Women, unisex, or mixed."
+                  as="label"
+                >
+                  <select name="gender" defaultValue={collection.gender ?? ""} className={inputClass}>
+                    <option value="">Mixed / unisex</option>
+                    <option value="men">Men</option>
+                    <option value="women">Women</option>
+                    <option value="unisex">Unisex</option>
+                  </select>
+                </AdminField>
+                <div className="md:col-span-2">
+                  <AdminField
+                    label="Description"
+                    description="A short note visitors read under the collection name."
+                    as="label"
+                  >
+                    <textarea name="description" defaultValue={collection.description ?? ""} className={inputClass} />
+                  </AdminField>
+                </div>
                 <div className="md:col-span-2">
                   <PhotoUploader
                     name="image_url"
                     folder="collections"
                     label="Collection photo"
+                    description="The image visitors see for this collection. Any photo up to 10MB."
                     value={collection.image_url ? [{ url: collection.image_url, alt: collection.name }] : []}
                   />
                 </div>
-                <label className="flex items-center gap-2 text-sm">
-                  <input type="checkbox" name="published" defaultChecked={collection.published} /> Published
-                </label>
+                <AdminField
+                  label="Show on the website"
+                  description="Untick to hide this collection from visitors."
+                >
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" name="published" defaultChecked={collection.published} /> Published
+                  </label>
+                </AdminField>
                 <details className="text-sm md:col-span-2">
                   <summary className="cursor-pointer underline">More options</summary>
-                  <div className="mt-3 grid gap-3 md:grid-cols-2">
-                    <input
-                      name="slug"
-                      defaultValue={collection.slug}
-                      readOnly={locked}
-                      className={inputClass}
-                    />
-                    <input name="sort_order" type="number" defaultValue={collection.sort_order} className={inputClass} />
+                  <div className="mt-3 grid gap-4 md:grid-cols-2">
+                    <AdminField
+                      label="Web address"
+                      description={
+                        locked
+                          ? "Men and Women keep their web addresses so existing links keep working."
+                          : "Leave as it is unless you need a different link."
+                      }
+                      as="label"
+                    >
+                      <input
+                        name="slug"
+                        defaultValue={collection.slug}
+                        readOnly={locked}
+                        className={inputClass}
+                      />
+                    </AdminField>
+                    <AdminField
+                      label="Display order"
+                      description="Lower numbers appear first."
+                      as="label"
+                    >
+                      <input name="sort_order" type="number" defaultValue={collection.sort_order} className={inputClass} />
+                    </AdminField>
                   </div>
-                  {locked ? (
-                    <p className="mt-2 text-xs text-muted">The web address for Men and Women stays as it is, so the website links keep working.</p>
-                  ) : null}
                 </details>
-                <button className="admin-primary">Save</button>
+                <button className="admin-primary">Save collection</button>
               </form>
               <div className="mt-3">
                 {locked ? (
-                  <p className="text-xs text-muted">This collection stays in the catalogue. You can hide it, but the web address cannot change.</p>
+                  <p className="text-xs text-muted">
+                    Men and Women stay in the catalogue. You can hide them, but you cannot remove them.
+                  </p>
                 ) : (
                   <ConfirmDelete
                     action={deleteCollectionAction}

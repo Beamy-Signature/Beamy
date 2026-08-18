@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { SafeImage } from "@/components/site/SafeImage";
 import { useCallback, useEffect, useState } from "react";
 
 export type HeroSlide = {
@@ -46,7 +46,7 @@ export function HeroSlideshow({
             slideIndex === index ? "opacity-100" : "opacity-0"
           }`}
         >
-          <Image
+          <SafeImage
             src={slide.url}
             alt={slide.alt}
             fill
@@ -76,7 +76,7 @@ export function HeroSlideshow({
                       : "border-white/20 opacity-60 hover:opacity-100"
                   }`}
                 >
-                  <Image src={slide.url} alt="" fill className="object-cover" sizes="48px" />
+                  <SafeImage src={slide.url} alt="" fill className="object-cover" sizes="48px" />
                 </button>
               ))}
             </div>
