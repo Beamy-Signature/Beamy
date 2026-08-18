@@ -42,10 +42,10 @@ insert into public.categories (id, name, slug, gender, sort_order) values
 on conflict (id) do nothing;
 
 insert into public.collections (id, name, slug, description, image_url, gender, published, sort_order) values
-  ('11111111-1111-4111-8111-111111111111', 'Men''s Collection', 'men', 'Structured tailoring for work, weddings and refined everyday wear.', null, 'men', true, 1),
-  ('22222222-2222-4222-8222-222222222222', 'Women''s Collection', 'women', 'Contemporary silhouettes with a clean, executive finish.', null, 'women', true, 2),
-  ('33333333-3333-4333-8333-333333333333', '2026 Executive Collection', '2026-executive', 'A unisex edit of BEAMY''s most considered boardroom and occasion pieces.', null, 'unisex', true, 3)
-on conflict (id) do nothing;
+  ('11111111-1111-4111-8111-111111111111', 'Men''s Collection', 'men', 'Structured tailoring for work, weddings and refined everyday wear.', '/mock/collection-men.jpg', 'men', true, 1),
+  ('22222222-2222-4222-8222-222222222222', 'Women''s Collection', 'women', 'Contemporary silhouettes with a clean, executive finish.', '/mock/collection-women.jpg', 'women', true, 2),
+  ('33333333-3333-4333-8333-333333333333', '2026 Executive Collection', '2026-executive', 'A unisex edit of BEAMY''s most considered boardroom and occasion pieces.', '/mock/collection-executive.jpg', 'unisex', true, 3)
+on conflict (id) do update set image_url = excluded.image_url;
 
 insert into public.products (
   id, name, slug, description, additional_info, price, price_display_mode,
@@ -68,9 +68,45 @@ insert into public.products (
 on conflict (id) do nothing;
 
 insert into public.testimonials (id, customer_name, quote, image_url, role, location, published, sort_order) values
-  ('d1000001-0000-4000-8000-000000000001', 'Adaeze Okonkwo', 'The navy suit arrived exactly as discussed — clean, structured, and I have not stopped receiving compliments at chambers.', null, 'Corporate lawyer', 'Lagos', true, 1),
-  ('d1000001-0000-4000-8000-000000000002', 'Tunde Adebayo', 'BEAMY understood the brief for my wedding agbada without turning it loud. The finish was precise. I felt like myself, only sharper.', null, 'Entrepreneur', 'Victoria Island', true, 2),
-  ('d1000001-0000-4000-8000-000000000003', 'Chioma Eze', 'I needed a look that could go from the office to a dinner. The two-piece was considered, comfortable and very well made.', null, 'Brand director', 'Ikoyi', true, 3),
-  ('d1000001-0000-4000-8000-000000000004', 'Ibrahim Musa', 'Measurements were taken properly, the cloth recommendation was honest, and the senator was ready when they said it would be.', null, 'Groom', 'Lekki', true, 4)
-on conflict (id) do nothing;
+  ('d1000001-0000-4000-8000-000000000001', 'Adaeze Okonkwo', 'The navy suit arrived exactly as discussed — clean, structured, and I have not stopped receiving compliments at chambers.', '/mock/portrait-1.jpg', 'Corporate lawyer', 'Lagos', true, 1),
+  ('d1000001-0000-4000-8000-000000000002', 'Tunde Adebayo', 'BEAMY understood the brief for my wedding agbada without turning it loud. The finish was precise. I felt like myself, only sharper.', '/mock/portrait-2.jpg', 'Entrepreneur', 'Victoria Island', true, 2),
+  ('d1000001-0000-4000-8000-000000000003', 'Chioma Eze', 'I needed a look that could go from the office to a dinner. The two-piece was considered, comfortable and very well made.', '/mock/portrait-3.jpg', 'Brand director', 'Ikoyi', true, 3),
+  ('d1000001-0000-4000-8000-000000000004', 'Ibrahim Musa', 'Measurements were taken properly, the cloth recommendation was honest, and the senator was ready when they said it would be.', '/mock/portrait-4.jpg', 'Groom', 'Lekki', true, 4)
+on conflict (id) do update set image_url = excluded.image_url;
+
+insert into public.hero_images (id, url, alt, sort_order, published) values
+  ('e2000001-0000-4000-8000-000000000001', '/mock/hero-1.jpg', 'BEAMY menswear, tailored for presence', 1, true),
+  ('e2000001-0000-4000-8000-000000000002', '/mock/hero-2.jpg', 'Signature black suiting', 2, true),
+  ('e2000001-0000-4000-8000-000000000003', '/mock/hero-3.jpg', 'Occasion tailoring in deep burgundy', 3, true),
+  ('e2000001-0000-4000-8000-000000000004', '/mock/hero-4.jpg', 'Structured womenswear', 4, true),
+  ('e2000001-0000-4000-8000-000000000005', '/mock/hero-5.jpg', 'Camel cloth, city light', 5, true),
+  ('e2000001-0000-4000-8000-000000000006', '/mock/hero-6.jpg', 'A quiet, considered silhouette', 6, true)
+on conflict (id) do update set url = excluded.url, alt = excluded.alt, published = true;
+
+insert into public.gallery_images (id, url, alt, sort_order, published) values
+  ('e1000001-0000-4000-8000-000000000001', '/mock/gallery-1.jpg', 'Tailored presence', 1, true),
+  ('e1000001-0000-4000-8000-000000000002', '/mock/gallery-2.jpg', 'Urban outerwear', 2, true),
+  ('e1000001-0000-4000-8000-000000000003', '/mock/gallery-3.jpg', 'Occasion gowns', 3, true),
+  ('e1000001-0000-4000-8000-000000000004', '/mock/gallery-4.jpg', 'Camel tailoring', 4, true),
+  ('e1000001-0000-4000-8000-000000000005', '/mock/gallery-5.jpg', 'The house showroom', 5, true),
+  ('e1000001-0000-4000-8000-000000000006', '/mock/gallery-6.jpg', 'Cloth on the rail', 6, true)
+on conflict (id) do update set url = excluded.url, alt = excluded.alt, published = true;
+
+insert into public.product_images (id, product_id, url, alt, sort_order) values
+  ('a1000001-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000001', '/mock/product-01.jpg', 'BEAMY Signature Black Suit', 1),
+  ('a1000002-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000002', '/mock/product-02.jpg', 'Ivory Executive Agbada', 1),
+  ('a1000003-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000003', '/mock/product-03.jpg', 'Midnight Senator Kaftan', 1),
+  ('a1000004-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000004', '/mock/product-04.jpg', 'White Custom Dress Shirt', 1),
+  ('a1000005-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000005', '/mock/product-05.jpg', 'Charcoal Corporate Trousers', 1),
+  ('a1000006-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000006', '/mock/product-06.jpg', 'Olive Structured Two-Piece', 1),
+  ('a1000007-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000007', '/mock/product-07.jpg', 'Urban Structured Jacket', 1),
+  ('a1000008-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000008', '/mock/product-08.jpg', 'Navy Boardroom Suit', 1),
+  ('a1000008-0000-4000-8000-000000000002', 'c1000001-0000-4000-8000-000000000008', '/mock/product-08b.jpg', 'Navy boardroom suit styling', 2),
+  ('a1000009-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000009', '/mock/product-09.jpg', 'Ivory Boardroom Gown', 1),
+  ('a1000010-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000010', '/mock/product-10.jpg', 'Burgundy Executive Two-Piece', 1),
+  ('a1000011-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000011', '/mock/product-11.jpg', 'Camel Tweed Suit', 1),
+  ('a1000012-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000012', '/mock/product-12.jpg', 'High-Waist Power Suit', 1),
+  ('a1000013-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000013', '/mock/product-13.jpg', 'Urban Blazer Dress', 1),
+  ('a1000014-0000-4000-8000-000000000001', 'c1000001-0000-4000-8000-000000000014', '/mock/product-14.jpg', 'Draft Ivory Dinner Jacket', 1)
+on conflict (id) do update set url = excluded.url, alt = excluded.alt;
 

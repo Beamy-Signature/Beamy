@@ -10,6 +10,8 @@ import type {
 
 const now = "2026-08-01T10:00:00.000Z";
 
+const mock = (file: string) => `/mock/${file}`;
+
 export const ids = {
   collections: {
     men: "11111111-1111-4111-8111-111111111111",
@@ -81,7 +83,7 @@ export const collections: Collection[] = [
     name: "Men's Collection",
     slug: "men",
     description: "Structured tailoring for work, weddings and refined everyday wear.",
-    image_url: null,
+    image_url: mock("collection-men.jpg"),
     gender: "men",
     published: true,
     sort_order: 1,
@@ -93,7 +95,7 @@ export const collections: Collection[] = [
     name: "Women's Collection",
     slug: "women",
     description: "Contemporary silhouettes with a clean, executive finish.",
-    image_url: null,
+    image_url: mock("collection-women.jpg"),
     gender: "women",
     published: true,
     sort_order: 2,
@@ -105,7 +107,7 @@ export const collections: Collection[] = [
     name: "2026 Executive Collection",
     slug: "2026-executive",
     description: "A unisex edit of BEAMY's most considered boardroom and occasion pieces.",
-    image_url: null,
+    image_url: mock("collection-executive.jpg"),
     gender: "unisex",
     published: true,
     sort_order: 3,
@@ -143,7 +145,9 @@ export const products: ProductWithRelations[] = [
     updated_at: now,
     category: categories[0],
     collection: collections[0],
-    images: [],
+    images: [
+      img("i1000001-1", "c1000001-0000-4000-8000-000000000001", mock("product-01.jpg"), "BEAMY Signature Black Suit"),
+    ],
   },
   {
     id: "c1000001-0000-4000-8000-000000000002",
@@ -166,7 +170,7 @@ export const products: ProductWithRelations[] = [
     category: categories[1],
     collection: collections[0],
     images: [
-      img("i1000002-1", "c1000001-0000-4000-8000-000000000002", "https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?auto=format&fit=crop&w=1600&q=80", "Ivory Executive Agbada"),
+      img("i1000002-1", "c1000001-0000-4000-8000-000000000002", mock("product-02.jpg"), "Ivory Executive Agbada"),
     ],
   },
   {
@@ -190,7 +194,7 @@ export const products: ProductWithRelations[] = [
     category: categories[2],
     collection: collections[0],
     images: [
-      img("i1000003-1", "c1000001-0000-4000-8000-000000000003", "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=1600&q=80", "Midnight Senator Kaftan"),
+      img("i1000003-1", "c1000001-0000-4000-8000-000000000003", mock("product-03.jpg"), "Midnight Senator Kaftan"),
     ],
   },
   {
@@ -214,7 +218,7 @@ export const products: ProductWithRelations[] = [
     category: categories[3],
     collection: collections[0],
     images: [
-      img("i1000004-1", "c1000001-0000-4000-8000-000000000004", "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1600&q=80", "White Custom Dress Shirt"),
+      img("i1000004-1", "c1000001-0000-4000-8000-000000000004", mock("product-04.jpg"), "White Custom Dress Shirt"),
     ],
   },
   {
@@ -238,7 +242,7 @@ export const products: ProductWithRelations[] = [
     category: categories[4],
     collection: collections[0],
     images: [
-      img("i1000005-1", "c1000001-0000-4000-8000-000000000005", "https://images.unsplash.com/photo-1473966968600-ce3387a7f43f?auto=format&fit=crop&w=1600&q=80", "Charcoal Corporate Trousers"),
+      img("i1000005-1", "c1000001-0000-4000-8000-000000000005", mock("product-05.jpg"), "Charcoal Corporate Trousers"),
     ],
   },
   {
@@ -262,7 +266,7 @@ export const products: ProductWithRelations[] = [
     category: categories[5],
     collection: collections[2],
     images: [
-      img("i1000006-1", "c1000001-0000-4000-8000-000000000006", "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?auto=format&fit=crop&w=1600&q=80", "Olive Structured Two-Piece"),
+      img("i1000006-1", "c1000001-0000-4000-8000-000000000006", mock("product-06.jpg"), "Olive Structured Two-Piece"),
     ],
   },
   {
@@ -286,7 +290,7 @@ export const products: ProductWithRelations[] = [
     category: categories[6],
     collection: collections[0],
     images: [
-      img("i1000007-1", "c1000001-0000-4000-8000-000000000007", "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1600&q=80", "Urban Structured Jacket"),
+      img("i1000007-1", "c1000001-0000-4000-8000-000000000007", mock("product-07.jpg"), "Urban Structured Jacket"),
     ],
   },
   {
@@ -310,8 +314,8 @@ export const products: ProductWithRelations[] = [
     category: categories[7],
     collection: collections[1],
     images: [
-      img("i1000008-1", "c1000001-0000-4000-8000-000000000008", "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1600&q=80", "Navy Boardroom Suit"),
-      img("i1000008-2", "c1000001-0000-4000-8000-000000000008", "https://images.unsplash.com/photo-1589216532372-1c2bd36729d3?auto=format&fit=crop&w=1600&q=80", "Navy boardroom suit styling"),
+      img("i1000008-1", "c1000001-0000-4000-8000-000000000008", mock("product-08.jpg"), "Navy Boardroom Suit"),
+      img("i1000008-2", "c1000001-0000-4000-8000-000000000008", mock("product-08b.jpg"), "Navy boardroom suit styling"),
     ],
   },
   {
@@ -335,7 +339,7 @@ export const products: ProductWithRelations[] = [
     category: categories[8],
     collection: collections[1],
     images: [
-      img("i1000009-1", "c1000001-0000-4000-8000-000000000009", "https://images.unsplash.com/photo-1515372039744-b8f17225fb3f?auto=format&fit=crop&w=1600&q=80", "Ivory Boardroom Gown"),
+      img("i1000009-1", "c1000001-0000-4000-8000-000000000009", mock("product-09.jpg"), "Ivory Boardroom Gown"),
     ],
   },
   {
@@ -359,7 +363,7 @@ export const products: ProductWithRelations[] = [
     category: categories[9],
     collection: collections[1],
     images: [
-      img("i1000010-1", "c1000001-0000-4000-8000-000000000010", "https://images.unsplash.com/photo-1539109136881-3be8266af6d0?auto=format&fit=crop&w=1600&q=80", "Burgundy Executive Two-Piece"),
+      img("i1000010-1", "c1000001-0000-4000-8000-000000000010", mock("product-10.jpg"), "Burgundy Executive Two-Piece"),
     ],
   },
   {
@@ -383,7 +387,7 @@ export const products: ProductWithRelations[] = [
     category: categories[10],
     collection: collections[2],
     images: [
-      img("i1000011-1", "c1000001-0000-4000-8000-000000000011", "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1600&q=80", "Camel Tweed Suit"),
+      img("i1000011-1", "c1000001-0000-4000-8000-000000000011", mock("product-11.jpg"), "Camel Tweed Suit"),
     ],
   },
   {
@@ -407,7 +411,7 @@ export const products: ProductWithRelations[] = [
     category: categories[11],
     collection: collections[1],
     images: [
-      img("i1000012-1", "c1000001-0000-4000-8000-000000000012", "https://images.unsplash.com/photo-1581044777550-4cfa60707c03?auto=format&fit=crop&w=1600&q=80", "High-Waist Power Suit"),
+      img("i1000012-1", "c1000001-0000-4000-8000-000000000012", mock("product-12.jpg"), "High-Waist Power Suit"),
     ],
   },
   {
@@ -431,7 +435,7 @@ export const products: ProductWithRelations[] = [
     category: categories[12],
     collection: collections[1],
     images: [
-      img("i1000013-1", "c1000001-0000-4000-8000-000000000013", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1600&q=80", "Urban Blazer Dress"),
+      img("i1000013-1", "c1000001-0000-4000-8000-000000000013", mock("product-13.jpg"), "Urban Blazer Dress"),
     ],
   },
   {
@@ -454,14 +458,10 @@ export const products: ProductWithRelations[] = [
     category: categories[0],
     collection: collections[0],
     images: [
-      img("i1000014-1", "c1000001-0000-4000-8000-000000000014", "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1600&q=80", "Draft Ivory Dinner Jacket"),
+      img("i1000014-1", "c1000001-0000-4000-8000-000000000014", mock("product-14.jpg"), "Draft Ivory Dinner Jacket"),
     ],
   },
 ];
-
-for (const product of products) {
-  product.images = [];
-}
 
 export const testimonials: Testimonial[] = [
   {
@@ -469,7 +469,7 @@ export const testimonials: Testimonial[] = [
     customer_name: "Adaeze Okonkwo",
     quote:
       "The navy suit arrived exactly as discussed — clean, structured, and I have not stopped receiving compliments at chambers.",
-    image_url: null,
+    image_url: mock("portrait-1.jpg"),
     role: "Corporate lawyer",
     location: "Lagos",
     published: true,
@@ -481,7 +481,7 @@ export const testimonials: Testimonial[] = [
     customer_name: "Tunde Adebayo",
     quote:
       "BEAMY understood the brief for my wedding agbada without turning it loud. The finish was precise. I felt like myself, only sharper.",
-    image_url: null,
+    image_url: mock("portrait-2.jpg"),
     role: "Entrepreneur",
     location: "Victoria Island",
     published: true,
@@ -493,7 +493,7 @@ export const testimonials: Testimonial[] = [
     customer_name: "Chioma Eze",
     quote:
       "I needed a look that could go from the office to a dinner. The two-piece was considered, comfortable and very well made.",
-    image_url: null,
+    image_url: mock("portrait-3.jpg"),
     role: "Brand director",
     location: "Ikoyi",
     published: true,
@@ -505,7 +505,7 @@ export const testimonials: Testimonial[] = [
     customer_name: "Ibrahim Musa",
     quote:
       "Measurements were taken properly, the cloth recommendation was honest, and the senator was ready when they said it would be.",
-    image_url: null,
+    image_url: mock("portrait-4.jpg"),
     role: "Groom",
     location: "Lekki",
     published: true,
@@ -514,8 +514,22 @@ export const testimonials: Testimonial[] = [
   },
 ];
 
-export const galleryImages: GalleryImage[] = [];
+export const galleryImages: GalleryImage[] = [
+  { id: "e1000001-0000-4000-8000-000000000001", url: mock("gallery-1.jpg"), alt: "Tailored presence", sort_order: 1, published: true },
+  { id: "e1000001-0000-4000-8000-000000000002", url: mock("gallery-2.jpg"), alt: "Urban outerwear", sort_order: 2, published: true },
+  { id: "e1000001-0000-4000-8000-000000000003", url: mock("gallery-3.jpg"), alt: "Occasion gowns", sort_order: 3, published: true },
+  { id: "e1000001-0000-4000-8000-000000000004", url: mock("gallery-4.jpg"), alt: "Camel tailoring", sort_order: 4, published: true },
+  { id: "e1000001-0000-4000-8000-000000000005", url: mock("gallery-5.jpg"), alt: "The house showroom", sort_order: 5, published: true },
+  { id: "e1000001-0000-4000-8000-000000000006", url: mock("gallery-6.jpg"), alt: "Cloth on the rail", sort_order: 6, published: true },
+];
 
-export const heroImages: { url: string; alt: string }[] = [];
+export const heroImages: { url: string; alt: string }[] = [
+  { url: mock("hero-1.jpg"), alt: "BEAMY menswear, tailored for presence" },
+  { url: mock("hero-2.jpg"), alt: "Signature black suiting" },
+  { url: mock("hero-3.jpg"), alt: "Occasion tailoring in deep burgundy" },
+  { url: mock("hero-4.jpg"), alt: "Structured womenswear" },
+  { url: mock("hero-5.jpg"), alt: "Camel cloth, city light" },
+  { url: mock("hero-6.jpg"), alt: "A quiet, considered silhouette" },
+];
 
-export const heroImage = "";
+export const heroImage = mock("hero-1.jpg");
