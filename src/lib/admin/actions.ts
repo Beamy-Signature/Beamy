@@ -117,7 +117,7 @@ export async function signupAction(formData: FormData) {
     email,
     password,
     options: {
-      emailRedirectTo: `${origin}/admin/auth/callback?next=/admin`,
+      emailRedirectTo: `${origin}/admin/auth/callback`,
     },
   });
   if (error) {
@@ -135,7 +135,7 @@ export async function forgotPasswordAction(formData: FormData) {
   const origin = await getRequestOrigin();
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/admin/auth/callback?next=/admin/reset-password`,
+    redirectTo: `${origin}/admin/reset-password`,
   });
   if (error) {
     const text = error.message.toLowerCase();

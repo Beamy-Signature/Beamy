@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Confirm your BEAMY Catalogue email</title>
+    <!--
+      Paste this into Supabase → Authentication → Email Templates → Confirm signup.
+      Subject: Confirm your BEAMY Catalogue email
+      Keep {{ .ConfirmationURL }} — that is the real confirm link.
+    -->
+  </head>
+  <body style="margin:0;padding:0;background-color:#efe8dc;">
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
+      Confirm your email to open the BEAMY Catalogue.
+    </div>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#efe8dc;">
+      <tr>
+        <td align="center" style="padding:36px 16px;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="width:560px;max-width:560px;background-color:#f6f1e8;border:1px solid #e6dcc8;">
+            <tr>
+              <td style="height:4px;background-color:#c4a35a;font-size:0;line-height:0;">&nbsp;</td>
+            </tr>
+            <tr>
+              <td align="center" style="padding:36px 40px 8px 40px;">
+                <img
+                  src="https://beamy-eight.vercel.app/brand/logo-lockup.png"
+                  width="220"
+                  alt="BEAMY Urban Fashion"
+                  style="display:block;width:220px;max-width:220px;height:auto;border:0;"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:12px 40px 0 40px;">
+                <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:#c4a35a;">
+                  BEAMY Catalogue
+                </p>
+                <h1 style="margin:14px 0 0 0;font-family:Georgia,'Times New Roman',serif;font-size:32px;line-height:1.2;font-weight:normal;color:#0b0b0b;">
+                  Confirm your email
+                </h1>
+                <div style="margin:18px 0 0 0;width:64px;height:1px;background-color:#c4a35a;font-size:0;line-height:0;">&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px 40px 0 40px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#3d3a35;">
+                <p style="margin:0;">
+                  A quiet space to keep the BEAMY collection current. Please confirm this email so you can sign in to the catalogue.
+                </p>
+                <p style="margin:16px 0 0 0;">
+                  This link is for <strong style="color:#0b0b0b;">{{ .Email }}</strong>.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding:32px 40px 8px 40px;">
+                <a
+                  href="{{ .ConfirmationURL }}"
+                  style="display:inline-block;background-color:#0b0b0b;color:#f6f1e8;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;padding:16px 28px;"
+                >
+                  Confirm email
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:20px 40px 36px 40px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#7a7468;">
+                <p style="margin:0;">
+                  If the button does not open, copy this link into your browser:
+                </p>
+                <p style="margin:10px 0 0 0;word-break:break-all;">
+                  <a href="{{ .ConfirmationURL }}" style="color:#7a2e6a;">{{ .ConfirmationURL }}</a>
+                </p>
+                <p style="margin:24px 0 0 0;">
+                  If you did not ask for a catalogue account, you can ignore this email.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:18px 40px;border-top:1px solid #e6dcc8;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#c4a35a;">
+                Lagos · Unisex · Bespoke
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

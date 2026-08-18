@@ -16,6 +16,12 @@ export async function middleware(request: NextRequest) {
 
   if (target === "admin" && !isAdminPath && !isApiPath && !isMetaPath && !isAuthCallback) {
     const url = request.nextUrl.clone();
+    const hasAuthParams =
+      url.searchParams.has("code") || url.searchParams.has("token_hash");
+    if (hasAuthParams) {
+      url.pathname = "/admin/auth/callback";
+      return NextResponse.redirect(url);
+    }
     url.pathname = "/admin";
     url.search = "";
     return NextResponse.redirect(url);

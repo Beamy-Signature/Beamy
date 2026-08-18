@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AuthShell, authInputClass } from "@/components/admin/AuthShell";
+import { PasswordField } from "@/components/admin/PasswordField";
 import { signupAction } from "@/lib/admin/actions";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -28,16 +29,10 @@ export default async function SignupPage({
         <form action={signupAction} className="mt-8 space-y-4">
           <label className="block text-sm">
             Email
-            <input name="email" type="email" required className={authInputClass} />
+            <input name="email" type="email" required autoComplete="email" className={authInputClass} />
           </label>
-          <label className="block text-sm">
-            Password
-            <input name="password" type="password" required minLength={8} className={authInputClass} />
-          </label>
-          <label className="block text-sm">
-            Confirm password
-            <input name="confirm" type="password" required minLength={8} className={authInputClass} />
-          </label>
+          <PasswordField name="password" label="Password" required minLength={8} autoComplete="new-password" />
+          <PasswordField name="confirm" label="Confirm password" required minLength={8} autoComplete="new-password" />
           {error ? <p className="text-sm text-gold">{error}</p> : null}
           <button type="submit" className="admin-primary w-full">
             Create account

@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AuthShell, authInputClass } from "@/components/admin/AuthShell";
+import { AuthShell } from "@/components/admin/AuthShell";
+import { PasswordField } from "@/components/admin/PasswordField";
 import { createClient } from "@/lib/supabase/client";
 
 export function ResetPasswordForm() {
@@ -14,10 +15,28 @@ export function ResetPasswordForm() {
 
   useEffect(() => {
     const supabase = createClient();
-    void supabase.auth.getUser().then(({ data }) => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+
+    async function prepare() {
+      if (code) {
+        try {
+          await Promise.race([
+            supabase.auth.exchangeCodeForSession(code),
+            new Promise<never>((_, reject) =>
+              window.setTimeout(() => reject(new Error("timeout")), 8000),
+            ),
+          ]);
+        } catch {
+          // Fall through to getUser — recovery may already have a session.
+        }
+      }
+      const { data } = await supabase.auth.getUser();
       setHasSession(Boolean(data.user));
       setReady(true);
-    });
+    }
+
+    void prepare();
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "PASSWORD_RECOVERY" || session) {
         setHasSession(true);
@@ -78,14 +97,8 @@ export function ResetPasswordForm() {
     <AuthShell title="New password">
       <p className="mt-4 text-sm text-muted">Choose a password you will remember for the catalogue.</p>
       <form onSubmit={onSubmit} className="mt-8 space-y-4">
-        <label className="block text-sm">
-          New password
-          <input name="password" type="password" required minLength={8} className={authInputClass} />
-        </label>
-        <label className="block text-sm">
-          Confirm password
-          <input name="confirm" type="password" required minLength={8} className={authInputClass} />
-        </label>
+        <PasswordField name="password" label="New password" required minLength={8} autoComplete="new-password" />
+        <PasswordField name="confirm" label="Confirm password" required minLength={8} autoComplete="new-password" />
         {error ? <p className="text-sm text-gold">{error}</p> : null}
         <button type="submit" disabled={busy} className="admin-primary w-full">
           {busy ? "Saving…" : "Save password"}

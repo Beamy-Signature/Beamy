@@ -67,6 +67,36 @@ If a statement errors because something already exists, you can usually ignore t
 
 Do **not** set `ADMIN_EMAILS`. The catalogue no longer locks to one owner address.
 
+### Branded emails
+
+Supabase will not let you paste custom templates until **custom SMTP** is on. That form is **not** a login to the client’s Gmail. Do not put `beamysignature25@gmail.com` in Host / Username / Password — Gmail will not send through that screen without her password, and a third-party host cannot send *as* `@gmail.com`.
+
+Use a sending service on **your** account (Resend is the simplest). Sender name can still be `Beamy`.
+
+1. Create a free account at [https://resend.com](https://resend.com) with **your** email.
+2. **Domains → Add** a domain you control, add the DNS records Resend shows, wait until it is verified. You cannot verify `gmail.com`.
+3. **API Keys → Create** (permission: Sending access). Copy the `re_…` key once.
+4. In Supabase, **Authentication → SMTP / Notifications → SMTP Settings**:
+
+| Field | Value |
+|---|---|
+| Sender email | `catalogue@your-verified-domain.com` (must be on the Resend domain) |
+| Sender name | `Beamy` |
+| Host | `smtp.resend.com` |
+| Port | `465` |
+| Username | `resend` |
+| Password | the Resend API key (`re_…`) |
+| Minimum interval | `60` is fine |
+
+5. Save. Then paste the templates:
+
+   - **Confirm signup** — subject `Confirm your BEAMY Catalogue email` — body `supabase/emails/confirm-signup.html`
+   - **Reset password** — subject `Reset your BEAMY Catalogue password` — body `supabase/emails/reset-password.html`
+
+Keep `{{ .ConfirmationURL }}` in the templates. That is the confirm / reset link.
+
+If the client later wants mail to come from `beamysignature25@gmail.com`, she can create a Gmail **App Password** (Google Account → Security → App passwords) and send you only that 16-character password. Then Host `smtp.gmail.com`, Port `587`, Username her Gmail, Password the app password. You still never log into her inbox.
+
 ---
 
 ## 3. Check it locally with Supabase

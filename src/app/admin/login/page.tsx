@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AuthShell, authInputClass } from "@/components/admin/AuthShell";
+import { PasswordField } from "@/components/admin/PasswordField";
 import { loginAction } from "@/lib/admin/actions";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -24,6 +25,11 @@ export default async function LoginPage({
         </p>
       ) : (
         <>
+          {notice === "confirmed" ? (
+            <p className="mt-6 text-sm leading-6 text-gold">
+              Your email is confirmed. Please sign in to open the catalogue.
+            </p>
+          ) : null}
           {notice === "check-email" ? (
             <p className="mt-6 text-sm leading-6 text-gold">
               Please check your email to confirm this account, then sign in.
@@ -38,12 +44,9 @@ export default async function LoginPage({
             <input type="hidden" name="next" value={next || "/admin"} />
             <label className="block text-sm">
               Email
-              <input name="email" type="email" required className={authInputClass} />
+              <input name="email" type="email" required autoComplete="email" className={authInputClass} />
             </label>
-            <label className="block text-sm">
-              Password
-              <input name="password" type="password" required className={authInputClass} />
-            </label>
+            <PasswordField name="password" label="Password" required autoComplete="current-password" />
             {error ? <p className="text-sm text-gold">{error}</p> : null}
             <button type="submit" className="admin-primary w-full">
               Sign in
