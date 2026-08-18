@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { getCollections, getProducts } from "@/lib/data/queries";
+import { getSiteUrl } from "@/lib/site-url";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = "https://beamy.fashion";
+  const base = getSiteUrl();
   const [products, collections] = await Promise.all([
     getProducts(),
     getCollections(),

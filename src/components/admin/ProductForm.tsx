@@ -15,7 +15,9 @@ export function ProductForm({
   collections: Collection[];
   action: (formData: FormData) => void | Promise<void>;
 }) {
-  const [more, setMore] = useState(false);
+  const [gender, setGender] = useState(product?.gender ?? "men");
+  const fallbackCollection =
+    collections.find((item) => item.slug === (gender === "women" ? "women" : "men"))?.id ?? "";
 
   return (
     <form action={action} className="max-w-3xl space-y-6">
@@ -27,7 +29,11 @@ export function ProductForm({
         folder="designs"
         multiple
         label="Photos"
-        value={product?.images.map((image) => ({ url: image.url, alt: image.alt ?? "" }))}
+        value={product?.images.map((image) => ({
+          id: image.id,
+          url: image.url,
+          alt: image.alt ?? "",
+        }))}
       />
       <Field label="Description">
         <textarea name="description" rows={5} required defaultValue={product?.description} className={inputClass} />
@@ -45,10 +51,30 @@ export function ProductForm({
         </Field>
       </div>
       <Field label="For">
-        <select name="gender" defaultValue={product?.gender ?? "men"} className={inputClass}>
+        <select
+          name="gender"
+          value={gender}
+          onChange={(event) => setGender(event.target.value as "men" | "women" | "unisex")}
+          className={inputClass}
+        >
           <option value="men">Men</option>
           <option value="women">Women</option>
           <option value="unisex">Unisex</option>
+        </select>
+      </Field>
+      <Field label="Collection">
+        <select
+          name="collection_id"
+          defaultValue={product?.collection_id ?? fallbackCollection}
+          key={gender}
+          className={inputClass}
+        >
+          <option value="">Choose a collection</option>
+          {collections.map((collection) => (
+            <option key={collection.id} value={collection.id}>
+              {collection.name}
+            </option>
+          ))}
         </select>
       </Field>
       <div className="flex gap-6">
@@ -61,31 +87,15 @@ export function ProductForm({
           Show on homepage
         </label>
       </div>
-      <button
-        type="button"
-        className="text-sm underline"
-        onClick={() => setMore((value) => !value)}
-      >
-        {more ? "Hide extra options" : "More options"}
-      </button>
-      {more ? (
-        <div className="space-y-5 border border-line bg-paper p-5">
+      <details className="text-sm">
+        <summary className="cursor-pointer underline">More options</summary>
+        <div className="mt-5 space-y-5 border border-line bg-paper p-5">
           <Field label="Category">
             <select name="category_id" defaultValue={product?.category_id ?? ""} className={inputClass}>
               <option value="">None</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.gender === "men" ? "Men" : "Women"} — {category.name}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Collection">
-            <select name="collection_id" defaultValue={product?.collection_id ?? ""} className={inputClass}>
-              <option value="">None</option>
-              {collections.map((collection) => (
-                <option key={collection.id} value={collection.id}>
-                  {collection.name}
                 </option>
               ))}
             </select>
@@ -109,16 +119,7 @@ export function ProductForm({
             />
           </Field>
         </div>
-      ) : (
-        <>
-          <input type="hidden" name="category_id" value={product?.category_id ?? ""} />
-          <input type="hidden" name="collection_id" value={product?.collection_id ?? ""} />
-          <input type="hidden" name="additional_info" value={product?.additional_info ?? ""} />
-          <input type="hidden" name="slug" value={product?.slug ?? ""} />
-          <input type="hidden" name="sort_order" value={product?.sort_order ?? 0} />
-          <input type="hidden" name="whatsapp_message" value={product?.whatsapp_message ?? ""} />
-        </>
-      )}
+      </details>
       <button type="submit" className="admin-primary">
         Save design
       </button>

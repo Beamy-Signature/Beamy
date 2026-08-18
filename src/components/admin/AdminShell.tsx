@@ -8,6 +8,7 @@ import {
   Image as ImageIcon,
   Layers,
   LayoutDashboard,
+  LayoutGrid,
   LogOut,
   Quote,
   Settings,
@@ -15,6 +16,7 @@ import {
   Tags,
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { AdminNotice } from "@/components/admin/AdminNotice";
 import { logoutAction } from "@/lib/admin/actions";
 
 const nav = [
@@ -23,6 +25,7 @@ const nav = [
   { href: "/admin/collections", label: "Collections", icon: Layers },
   { href: "/admin/categories", label: "Categories", icon: Tags },
   { href: "/admin/homepage", label: "Homepage images", icon: ImageIcon },
+  { href: "/admin/gallery", label: "Lookbook gallery", icon: LayoutGrid },
   { href: "/admin/testimonials", label: "Testimonials", icon: Quote },
   { href: "/admin/settings", label: "Site settings", icon: Settings },
 ];
@@ -98,7 +101,7 @@ export function AdminShell({
       <div className="h-1 shrink-0 bg-gradient-to-r from-gold via-accent to-gold" />
       {!configured ? (
         <div className="shrink-0 bg-ink px-4 py-2.5 text-center text-[11px] leading-5 tracking-wide text-paper">
-          You are working on this computer for now. Connect Supabase before going live so every design and photo is kept safe.
+          You are working on this computer for now. Designs are saved in a local file on this PC, not the live database. Connect Supabase before going live so every design and photo is kept safe.
         </div>
       ) : null}
 
@@ -199,6 +202,7 @@ export function AdminShell({
         </aside>
 
         <main ref={mainRef} className="admin-main min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
+          <AdminNotice />
           <div key={pathname} className="admin-page-enter p-4 sm:p-6 lg:p-10">
             {children}
           </div>

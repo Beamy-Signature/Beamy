@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
+import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -16,7 +17,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://beamy.fashion"),
+  metadataBase: new URL(getSiteUrl()),
   title: {
     default: "BEAMY | Urban Fashion",
     template: "%s | BEAMY",

@@ -1,5 +1,8 @@
 export function friendlyAuthError(message?: string) {
   const text = (message ?? "").toLowerCase();
+  if (text.includes("cannot open the catalogue")) {
+    return "This account cannot open the catalogue. Please sign in with the owner’s email.";
+  }
   if (text.includes("invalid") || text.includes("credential") || text.includes("password")) {
     return "That email or password doesn’t look quite right. Please try again.";
   }
@@ -15,7 +18,7 @@ export function friendlyAuthError(message?: string) {
 export function friendlySaveError(message?: string) {
   const text = (message ?? "").toLowerCase();
   if (text.includes("men and women")) {
-    return "Men and Women stay in the catalogue so the website always has a home for those pieces. You can hide or rename them instead.";
+    return "Men and Women stay in the catalogue so the website always has a home for those pieces. You can hide them, but their web addresses cannot change.";
   }
   if (text.includes("duplicate") || text.includes("unique") || text.includes("already exists")) {
     return "Something with that name is already in the catalogue. Please choose a slightly different name and try again.";

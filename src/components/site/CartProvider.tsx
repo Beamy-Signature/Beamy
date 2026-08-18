@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { CartItem, ProductWithRelations } from "@/lib/types";
 
 type CartContextValue = {
@@ -28,18 +28,36 @@ function toItem(product: ProductWithRelations, quantity: number): CartItem {
   };
 }
 
+function mergeCart(primary: CartItem[], secondary: CartItem[]): CartItem[] {
+  const map = new Map<string, CartItem>();
+  for (const item of secondary) map.set(item.productId, { ...item });
+  for (const item of primary) {
+    const existing = map.get(item.productId);
+    if (existing) {
+      map.set(item.productId, { ...existing, quantity: existing.quantity + item.quantity });
+    } else {
+      map.set(item.productId, { ...item });
+    }
+  }
+  return [...map.values()];
+}
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [open, setOpen] = useState(false);
   const [ready, setReady] = useState(false);
+  const itemsRef = useRef(items);
+  itemsRef.current = items;
 
   useEffect(() => {
+    let stored: CartItem[] = [];
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) setItems(JSON.parse(raw) as CartItem[]);
+      if (raw) stored = JSON.parse(raw) as CartItem[];
     } catch {
-      setItems([]);
+      stored = [];
     }
+    setItems((current) => mergeCart(current, stored));
     setReady(true);
   }, []);
 
@@ -47,6 +65,38 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (!ready) return;
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items, ready]);
+
+  useEffect(() => {
+    if (!ready) return;
+    const ids = itemsRef.current.map((item) => item.productId);
+    if (ids.length === 0) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const response = await fetch("/api/cart/validate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids }),
+        });
+        if (!response.ok || cancelled) return;
+        const data = (await response.json()) as { items?: CartItem[] };
+        const live = data.items ?? [];
+        const liveById = new Map(live.map((item) => [item.productId, item]));
+        setItems((current) =>
+          current.flatMap((item) => {
+            const next = liveById.get(item.productId);
+            if (!next) return [];
+            return [{ ...item, ...next, quantity: item.quantity }];
+          }),
+        );
+      } catch {
+        // Keep the local bag if the catalogue cannot be reached.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [ready]);
 
   const value = useMemo<CartContextValue>(
     () => ({

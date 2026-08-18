@@ -11,6 +11,15 @@ This is the checklist to take the site from this computer to a live URL the clie
 
 Local saves currently go into `data/cms.json` and `public/uploads`. That is fine for development only. **Production must use Supabase**, or photos and catalogue edits will disappear on the next deploy.
 
+### Where catalogue data lives
+
+| Environment | Products, collections, categories, testimonials, homepage images, settings |
+|---|---|
+| This computer, no `.env.local` | `data/cms.json` on this PC (plus photos in `public/uploads`) |
+| This computer or Vercel, with Supabase keys | Your Supabase Postgres database (photos in Supabase Storage) |
+
+The public website and the catalogue must share the same Supabase project. If the keys are missing on Vercel, the live site falls back to the built-in mock seed and admin changes will not stick.
+
 ---
 
 ## 1. Create a Supabase project
@@ -56,6 +65,14 @@ If a statement errors because something already exists, you can usually ignore t
    - Email: the owner’s Gmail (or `beamysignature25@gmail.com`)
    - Password: give her a simple password in person, then she can change it
 4. There is no public registration. Only users you create can open `/admin`.
+5. Optional but recommended: run `supabase/patch-admins.sql`, then insert the owner's email:
+
+```sql
+insert into public.catalogue_admins (email) values ('beamysignature25@gmail.com')
+on conflict (email) do nothing;
+```
+
+Also set `ADMIN_EMAILS` to that same address on both Vercel projects so only the owner can open the catalogue.
 
 ---
 
@@ -101,29 +118,31 @@ Do **not** commit `.env.local`.
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | from Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | from Supabase |
+| `NEXT_PUBLIC_SITE_URL` | this project's `*.vercel.app` URL (after first deploy you can add it and redeploy) |
+| `ADMIN_EMAILS` | the owner's login email, e.g. `beamysignature25@gmail.com` |
 
 4. Deploy.
 5. After the first deploy, add the live URL in Supabase:
 
 **Authentication → URL configuration**
 
-- Site URL: `https://your-domain.vercel.app`
-- Redirect URLs: `https://your-domain.vercel.app/**`
+- Site URL: `https://your-project.vercel.app`
+- Redirect URLs: `https://your-project.vercel.app/**`
 
-Optional: add a custom domain in Vercel (e.g. `beamy.ng` or `beamysignature.com`) and repeat the Site URL with that domain.
+There is no custom domain. Use the `*.vercel.app` addresses Vercel gives you.
 
-### Split website and CMS (two Vercel projects + subdomain)
+### Split website and CMS (two Vercel projects)
 
-One Vercel project can serve both the public site and `/admin`. To put the **catalogue on a subdomain** (recommended), create **two Vercel projects from the same GitHub repo**.
+One Vercel project can serve both the public site and `/admin`. To keep them separate, create **two Vercel projects from the same GitHub repo**. Each one gets its own `*.vercel.app` URL. No domain purchase or DNS is required.
 
 Example:
 
 | App | URL |
 |---|---|
-| Public website | `https://beamy.fashion` |
-| Catalogue / CMS | `https://catalogue.beamy.fashion` |
+| Public website | `https://beamy-web.vercel.app` |
+| Catalogue / CMS | `https://beamy-cms.vercel.app` |
 
-Use whatever domain you actually own. The CMS hostname can be `catalogue`, `cms`, or `admin`.
+Vercel assigns the exact names. Copy them from **Project → Settings → Domains** after each deploy.
 
 #### 1. Push the repo to GitHub
 
@@ -135,7 +154,7 @@ git commit -m "BEAMY website"
 
 Create a GitHub repository, push `main`, and **do not** commit `.env.local`.
 
-#### 2. Website project (apex / www)
+#### 2. Website project
 
 1. [vercel.com](https://vercel.com) → **Add New… → Project** → import the GitHub repo.
 2. Project name: `beamy-web`.
@@ -147,16 +166,16 @@ Create a GitHub repository, push `main`, and **do not** commit `.env.local`.
 |---|---|
 | `APP_TARGET` | `web` |
 | `NEXT_PUBLIC_APP_TARGET` | `web` |
+| `NEXT_PUBLIC_SITE_URL` | this website's `*.vercel.app` URL |
 | `NEXT_PUBLIC_SUPABASE_URL` | from Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | from Supabase |
+| `ADMIN_EMAILS` | the owner's login email |
 
-6. Deploy. You will get something like `beamy-web.vercel.app`.
-7. **Settings → Domains** → add `beamy.fashion` and optionally `www.beamy.fashion`.
-8. At your domain registrar, add the DNS records Vercel shows (usually an `A` for the apex and a `CNAME` for `www`).
+6. Deploy. Use the URL Vercel shows, for example `https://beamy-web.vercel.app`.
 
 `/admin` is hidden on this project.
 
-#### 3. Catalogue project (subdomain)
+#### 3. Catalogue project
 
 1. **Add New… → Project** again → import the **same** GitHub repo. Confirm you want a second project.
 2. Project name: `beamy-cms`.
@@ -167,37 +186,28 @@ Create a GitHub repository, push `main`, and **do not** commit `.env.local`.
 |---|---|
 | `APP_TARGET` | `admin` |
 | `NEXT_PUBLIC_APP_TARGET` | `admin` |
-| `NEXT_PUBLIC_SITE_URL` | `https://beamy.fashion` |
+| `NEXT_PUBLIC_SITE_URL` | the website Vercel URL, e.g. `https://beamy-web.vercel.app` |
 | `NEXT_PUBLIC_SUPABASE_URL` | from Supabase (same as the website) |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | from Supabase (same as the website) |
+| `ADMIN_EMAILS` | the owner's login email (same as the website) |
 
-5. Deploy. You will get `beamy-cms.vercel.app`. Visiting `/` on this project redirects to `/admin`.
-6. **Settings → Domains** → add `catalogue.beamy.fashion`.
-7. At your registrar, add the `CNAME` Vercel shows, for example:
-
-| Type | Name | Value |
-|---|---|---|
-| `CNAME` | `catalogue` | `cname.vercel-dns.com` |
-
-Wait until the domain is **Valid** and HTTPS is issued (often a few minutes).
+5. Deploy. Use the URL Vercel shows, for example `https://beamy-cms.vercel.app`. Visiting `/` on this project redirects to `/admin`.
 
 #### 4. Tell Supabase about both URLs
 
 **Authentication → URL configuration**
 
-- **Site URL:** `https://catalogue.beamy.fashion` (login lives on the CMS)
-- **Redirect URLs** (add all of these):
-  - `https://catalogue.beamy.fashion/**`
-  - `https://beamy.fashion/**`
-  - `https://www.beamy.fashion/**`
-  - the two `*.vercel.app` URLs if you still use them
+- **Site URL:** `https://beamy-cms.vercel.app` (login lives on the CMS)
+- **Redirect URLs:**
+  - `https://beamy-cms.vercel.app/**`
+  - `https://beamy-web.vercel.app/**`
 
-Create the admin user under **Authentication → Users** if you have not already.
+Replace those hostnames with the real Vercel URLs from each project. Create the admin user under **Authentication → Users** if you have not already.
 
 #### 5. Check it
 
-- `https://beamy.fashion` — public site. `/admin` should 404.
-- `https://catalogue.beamy.fashion` — catalogue login / dashboard.
+- Website Vercel URL — public site. `/admin` should 404.
+- Catalogue Vercel URL — catalogue login / dashboard.
 - Add a design in the CMS and confirm it appears on the public site (same Supabase project).
 
 On this computer:
@@ -229,7 +239,8 @@ Do these with the owner, on her phone:
 - **Show on homepage** = Featured.
 - **Draft** = public cannot see it.
 - **Homepage images** = the rotating banner.
-- Men and Women collections cannot be deleted.
+- **Lookbook gallery** = the photo grid on the homepage.
+- Men and Women collections cannot be deleted, and their web addresses cannot change.
 - Delete always asks for confirmation.
 
 ---
@@ -249,7 +260,8 @@ No card payment is collected on the site.
 
 ## 9. Optional later
 
-- Custom domain + Google Search Console
+- A custom domain, if one is purchased later
+- Google Search Console
 - Real product photography
 - Measurement guide PDF
 - Extra admin user

@@ -67,15 +67,23 @@ export default async function AdminCollectionsPage() {
                 <details className="text-sm md:col-span-2">
                   <summary className="cursor-pointer underline">More options</summary>
                   <div className="mt-3 grid gap-3 md:grid-cols-2">
-                    <input name="slug" defaultValue={collection.slug} className={inputClass} />
+                    <input
+                      name="slug"
+                      defaultValue={collection.slug}
+                      readOnly={locked}
+                      className={inputClass}
+                    />
                     <input name="sort_order" type="number" defaultValue={collection.sort_order} className={inputClass} />
                   </div>
+                  {locked ? (
+                    <p className="mt-2 text-xs text-muted">The web address for Men and Women stays as it is, so the website links keep working.</p>
+                  ) : null}
                 </details>
                 <button className="admin-primary">Save</button>
               </form>
               <div className="mt-3">
                 {locked ? (
-                  <p className="text-xs text-muted">This collection stays in the catalogue. You can hide or rename it instead.</p>
+                  <p className="text-xs text-muted">This collection stays in the catalogue. You can hide it, but the web address cannot change.</p>
                 ) : (
                   <ConfirmDelete
                     action={deleteCollectionAction}

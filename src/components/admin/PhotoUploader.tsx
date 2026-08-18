@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 
-type Photo = { url: string; alt: string };
+type Photo = { id?: string; url: string; alt: string };
 
 export function PhotoUploader({
   name = "image_url",
@@ -81,6 +81,7 @@ export function PhotoUploader({
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {photos.map((photo, index) => (
             <div key={`${photo.url}-${index}`} className="relative">
+              <input type="hidden" name="image_id" value={photo.id ?? ""} />
               <input type="hidden" name={name} value={photo.url} />
               <input type="hidden" name={altName} value={photo.alt} />
               <div className="relative aspect-square overflow-hidden bg-line">

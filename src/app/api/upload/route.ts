@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 import { friendlyUploadError } from "@/lib/friendly-error";
+import { isAllowedAdminEmail } from "@/lib/admin/guard";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -9,8 +10,21 @@ export const runtime = "nodejs";
 
 const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
 
+function bucketFor(folder: string) {
+  if (folder === "collections") return "collection-images";
+  if (folder === "testimonials") return "testimonial-images";
+  if (folder === "hero" || folder === "gallery") return "hero-images";
+  return "product-images";
+}
+
 export async function POST(request: Request) {
-  const formData = await request.formData();
+  let formData: FormData;
+  try {
+    formData = await request.formData();
+  } catch {
+    return NextResponse.json({ error: friendlyUploadError("Choose a photo.") }, { status: 400 });
+  }
+
   const file = formData.get("file");
   const folder = String(formData.get("folder") || "designs");
 
@@ -26,31 +40,25 @@ export async function POST(request: Request) {
 
   const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
   const filename = `${Date.now()}-${crypto.randomUUID()}.${ext}`;
+  const storagePath = folder === "gallery" ? `gallery/${filename}` : filename;
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) {
+    if (!user || !isAllowedAdminEmail(user.email)) {
       return NextResponse.json({ error: friendlyUploadError("Sign in to upload.") }, { status: 401 });
     }
-    const bucket =
-      folder === "collections"
-        ? "collection-images"
-        : folder === "testimonials"
-          ? "testimonial-images"
-          : folder === "hero"
-            ? "hero-images"
-            : "product-images";
-    const { error } = await supabase.storage.from(bucket).upload(filename, file, {
+    const bucket = bucketFor(folder);
+    const { error } = await supabase.storage.from(bucket).upload(storagePath, file, {
       contentType: file.type,
       upsert: false,
     });
     if (error) {
       return NextResponse.json({ error: friendlyUploadError(error.message) }, { status: 500 });
     }
-    const { data } = supabase.storage.from(bucket).getPublicUrl(filename);
+    const { data } = supabase.storage.from(bucket).getPublicUrl(storagePath);
     return NextResponse.json({ url: data.publicUrl });
   }
 

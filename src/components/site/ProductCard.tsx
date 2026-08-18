@@ -44,6 +44,7 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
           <OrderButton
             productName={product.name}
             customMessage={product.whatsapp_message}
+            variant="quiet"
             className="w-full"
           />
         </div>

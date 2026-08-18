@@ -8,7 +8,7 @@ Orders are completed on WhatsApp. There is no card checkout.
 
 - A public website for collections, individual designs, about, contact and a bag that opens WhatsApp
 - A private catalogue at `/admin` for adding designs, photos, collections, categories, testimonials and site details
-- Optional split builds, so the website and the catalogue can be deployed as two Vercel projects (for example `beamy.fashion` and `catalogue.beamy.fashion`)
+- Optional split builds, so the website and the catalogue can be deployed as two Vercel projects (for example `beamy-web.vercel.app` and `beamy-cms.vercel.app`)
 
 ## Local development
 
@@ -39,4 +39,4 @@ Without Supabase, changes are stored on this computer only. Before going live, c
 
 ## Deploy
 
-See [DEPLOY.md](./DEPLOY.md) for Supabase, Vercel, custom domains and the optional website-plus-subdomain catalogue setup.
+See [DEPLOY.md](./DEPLOY.md) for Supabase, Vercel and the optional two-project setup (website and catalogue on separate `*.vercel.app` URLs).

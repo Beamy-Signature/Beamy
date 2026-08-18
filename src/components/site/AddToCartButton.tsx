@@ -16,7 +16,7 @@ export function AddToCartButton({
     <button
       type="button"
       onClick={() => addItem(product)}
-      className={`inline-flex items-center justify-center border border-ink px-5 py-3 text-[11px] tracking-[0.18em] uppercase transition-colors duration-300 hover:bg-ink hover:text-paper ${className}`}
+      className={`inline-flex items-center justify-center border border-ink bg-ink px-5 py-3 text-[11px] tracking-[0.18em] text-paper uppercase transition-colors duration-300 hover:bg-transparent hover:text-ink ${className}`}
     >
       Add to bag
     </button>

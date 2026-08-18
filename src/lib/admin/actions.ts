@@ -6,8 +6,13 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { slugify } from "@/lib/slug";
 import { hydrateProduct, readStore, writeStore } from "@/lib/data/local-store";
+import { LOCKED_COLLECTION_SLUGS } from "@/lib/data/gender";
+import { requireSupabaseUser, isAllowedAdminEmail } from "@/lib/admin/guard";
+import { upsertAndPrune, withoutCreatedAt } from "@/lib/admin/sync-rows";
 import { friendlyAuthError, friendlySaveError } from "@/lib/friendly-error";
+import type { AdminNoticeKey } from "@/lib/admin/notices";
 import type {
+  GalleryImage,
   Gender,
   HeroImage,
   PriceDisplayMode,
@@ -18,19 +23,63 @@ import type {
 function revalidateCatalogue() {
   revalidatePath("/", "layout");
   revalidatePath("/admin", "layout");
+  revalidatePath("/collections");
+  revalidatePath("/collections/men");
+  revalidatePath("/collections/women");
+  revalidatePath("/product", "layout");
+}
+
+function done(path: string, notice: AdminNoticeKey): never {
+  revalidateCatalogue();
+  redirect(`${path}?notice=${notice}`);
+}
+
+async function defaultCollectionId(gender: string, supabase?: Awaited<ReturnType<typeof requireSupabaseUser>>) {
+  const slug = gender === "women" ? "women" : "men";
+  if (!isSupabaseConfigured()) {
+    const store = await readStore();
+    return store.collections.find((item) => item.slug === slug)?.id ?? null;
+  }
+  const client = supabase ?? (await requireSupabaseUser());
+  const { data } = await client.from("collections").select("id").eq("slug", slug).maybeSingle();
+  return data?.id ?? null;
 }
 
 function str(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
 }
 
-async function requireSupabaseUser() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/admin/login");
-  return supabase;
+async function lockCollectionSlug(id: string, requestedSlug: string) {
+  if (!isSupabaseConfigured()) {
+    const store = await readStore();
+    return applyLockedSlug(
+      store.collections.find((item) => item.id === id)?.slug,
+      requestedSlug,
+      store.collections.some((item) => item.slug === requestedSlug && item.id !== id),
+    );
+  }
+  const supabase = await requireSupabaseUser();
+  const { data: existing } = await supabase.from("collections").select("slug").eq("id", id).maybeSingle();
+  const { data: taken } = await supabase
+    .from("collections")
+    .select("id")
+    .eq("slug", requestedSlug)
+    .neq("id", id)
+    .maybeSingle();
+  return applyLockedSlug(existing?.slug, requestedSlug, Boolean(taken));
+}
+
+function applyLockedSlug(existingSlug: string | undefined, requestedSlug: string, taken: boolean) {
+  if (existingSlug && LOCKED_COLLECTION_SLUGS.has(existingSlug)) {
+    return existingSlug;
+  }
+  if (LOCKED_COLLECTION_SLUGS.has(requestedSlug) && existingSlug !== requestedSlug) {
+    throw new Error(friendlySaveError("Men and Women web addresses cannot be used for another collection."));
+  }
+  if (taken && LOCKED_COLLECTION_SLUGS.has(requestedSlug)) {
+    throw new Error(friendlySaveError("Men and Women web addresses cannot be used for another collection."));
+  }
+  return requestedSlug;
 }
 
 export async function loginAction(formData: FormData) {
@@ -45,11 +94,17 @@ export async function loginAction(formData: FormData) {
   if (error) {
     redirect(`/admin/login?error=${encodeURIComponent(friendlyAuthError(error.message))}`);
   }
+  if (!isAllowedAdminEmail(email)) {
+    await supabase.auth.signOut();
+    redirect(
+      `/admin/login?error=${encodeURIComponent(friendlyAuthError("This account cannot open the catalogue."))}`,
+    );
+  }
   redirect(next.startsWith("/admin") ? next : "/admin");
 }
 
 export async function logoutAction() {
-  if (!isSupabaseConfigured()) redirect("/");
+  if (!isSupabaseConfigured()) redirect("/admin");
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/admin/login");
@@ -61,8 +116,9 @@ function productPayload(formData: FormData) {
   const now = new Date().toISOString();
   const imageUrls = formData.getAll("image_url").map(String).filter(Boolean);
   const imageAlts = formData.getAll("image_alt").map(String);
+  const imageIds = formData.getAll("image_id").map(String);
   const images: ProductImage[] = imageUrls.map((url, index) => ({
-    id: crypto.randomUUID(),
+    id: imageIds[index] || crypto.randomUUID(),
     product_id: id,
     url,
     alt: imageAlts[index] || name,
@@ -96,6 +152,9 @@ function productPayload(formData: FormData) {
 
 export async function saveProductAction(formData: FormData) {
   const product = productPayload(formData);
+  if (!product.collection_id) {
+    product.collection_id = await defaultCollectionId(product.gender);
+  }
   if (!isSupabaseConfigured()) {
     const store = await readStore();
     const existing = store.products.find((item) => item.id === product.id);
@@ -103,30 +162,31 @@ export async function saveProductAction(formData: FormData) {
     const hydrated = hydrateProduct(product, store);
     store.products = [...store.products.filter((item) => item.id !== product.id), hydrated];
     await writeStore(store);
-    revalidateCatalogue();
-    redirect("/admin/products");
+    done("/admin/products", "saved");
   }
 
   const supabase = await requireSupabaseUser();
+  if (!product.collection_id) {
+    product.collection_id = await defaultCollectionId(product.gender, supabase);
+  }
   const { images, category, collection, ...row } = product;
   void category;
   void collection;
-  const { error } = await supabase.from("products").upsert(row);
+  const { error } = await supabase.from("products").upsert(withoutCreatedAt(row));
   if (error) throw new Error(friendlySaveError(error.message));
-  await supabase.from("product_images").delete().eq("product_id", product.id);
-  if (images.length > 0) {
-    const { error: imageError } = await supabase.from("product_images").insert(
-      images.map((image) => ({
-        product_id: product.id,
-        url: image.url,
-        alt: image.alt,
-        sort_order: image.sort_order,
-      })),
-    );
-    if (imageError) throw new Error(friendlySaveError(imageError.message));
-  }
-  revalidateCatalogue();
-  redirect("/admin/products");
+  await upsertAndPrune(
+    supabase,
+    "product_images",
+    images.map((image) => ({
+      id: image.id,
+      product_id: product.id,
+      url: image.url,
+      alt: image.alt,
+      sort_order: image.sort_order,
+    })),
+    { scopeColumn: "product_id", scopeValue: product.id },
+  );
+  done("/admin/products", "saved");
 }
 
 export async function deleteProductAction(formData: FormData) {
@@ -135,14 +195,12 @@ export async function deleteProductAction(formData: FormData) {
     const store = await readStore();
     store.products = store.products.filter((item) => item.id !== id);
     await writeStore(store);
-    revalidateCatalogue();
-    redirect("/admin/products");
+    done("/admin/products", "removed");
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("products").delete().eq("id", id);
   if (error) throw new Error(friendlySaveError(error.message));
-  revalidateCatalogue();
-  redirect("/admin/products");
+  done("/admin/products", "removed");
 }
 
 export async function toggleProductFlag(formData: FormData) {
@@ -158,23 +216,30 @@ export async function toggleProductFlag(formData: FormData) {
       item.id === id ? { ...item, [field]: value } : item,
     );
     await writeStore(store);
-    revalidateCatalogue();
-    return;
+    done(
+      "/admin/products",
+      field === "published" ? (value ? "published" : "unpublished") : value ? "featured" : "unfeatured",
+    );
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("products").update({ [field]: value }).eq("id", id);
   if (error) throw new Error(friendlySaveError(error.message));
-  revalidateCatalogue();
+  done(
+    "/admin/products",
+    field === "published" ? (value ? "published" : "unpublished") : value ? "featured" : "unfeatured",
+  );
 }
 
 export async function saveCollectionAction(formData: FormData) {
   const id = str(formData, "id") || crypto.randomUUID();
   const name = str(formData, "name");
   const now = new Date().toISOString();
+  const requestedSlug = str(formData, "slug") || slugify(name);
+  const slug = await lockCollectionSlug(id, requestedSlug);
   const collection = {
     id,
     name,
-    slug: str(formData, "slug") || slugify(name),
+    slug,
     description: str(formData, "description") || null,
     image_url: str(formData, "image_url") || null,
     gender: (str(formData, "gender") || null) as Gender | null,
@@ -191,15 +256,13 @@ export async function saveCollectionAction(formData: FormData) {
     store.collections = [...store.collections.filter((item) => item.id !== id), collection];
     store.products = store.products.map((product) => hydrateProduct(product, store));
     await writeStore(store);
-    revalidateCatalogue();
-    redirect("/admin/collections");
+    done("/admin/collections", "saved");
   }
 
   const supabase = await requireSupabaseUser();
-  const { error } = await supabase.from("collections").upsert(collection);
+  const { error } = await supabase.from("collections").upsert(withoutCreatedAt(collection));
   if (error) throw new Error(friendlySaveError(error.message));
-  revalidateCatalogue();
-  redirect("/admin/collections");
+  done("/admin/collections", "saved");
 }
 
 export async function deleteCollectionAction(formData: FormData) {
@@ -207,23 +270,21 @@ export async function deleteCollectionAction(formData: FormData) {
   if (!isSupabaseConfigured()) {
     const store = await readStore();
     const collection = store.collections.find((item) => item.id === id);
-    if (collection && (collection.slug === "men" || collection.slug === "women")) {
+    if (collection && LOCKED_COLLECTION_SLUGS.has(collection.slug)) {
       throw new Error(friendlySaveError("Men and Women collections cannot be deleted."));
     }
     store.collections = store.collections.filter((item) => item.id !== id);
     await writeStore(store);
-    revalidateCatalogue();
-    redirect("/admin/collections");
+    done("/admin/collections", "removed");
   }
   const supabase = await requireSupabaseUser();
   const { data } = await supabase.from("collections").select("slug").eq("id", id).maybeSingle();
-  if (data?.slug === "men" || data?.slug === "women") {
+  if (data?.slug && LOCKED_COLLECTION_SLUGS.has(data.slug)) {
     throw new Error(friendlySaveError("Men and Women collections cannot be deleted."));
   }
   const { error } = await supabase.from("collections").delete().eq("id", id);
   if (error) throw new Error(friendlySaveError(error.message));
-  revalidateCatalogue();
-  redirect("/admin/collections");
+  done("/admin/collections", "removed");
 }
 
 export async function saveCategoryAction(formData: FormData) {
@@ -246,14 +307,12 @@ export async function saveCategoryAction(formData: FormData) {
     store.categories = [...store.categories.filter((item) => item.id !== id), category];
     store.products = store.products.map((product) => hydrateProduct(product, store));
     await writeStore(store);
-    revalidateCatalogue();
-    redirect("/admin/categories");
+    done("/admin/categories", "saved");
   }
   const supabase = await requireSupabaseUser();
-  const { error } = await supabase.from("categories").upsert(category);
+  const { error } = await supabase.from("categories").upsert(withoutCreatedAt(category));
   if (error) throw new Error(friendlySaveError(error.message));
-  revalidateCatalogue();
-  redirect("/admin/categories");
+  done("/admin/categories", "saved");
 }
 
 export async function deleteCategoryAction(formData: FormData) {
@@ -263,14 +322,12 @@ export async function deleteCategoryAction(formData: FormData) {
     store.categories = store.categories.filter((item) => item.id !== id);
     store.products = store.products.map((product) => hydrateProduct(product, store));
     await writeStore(store);
-    revalidateCatalogue();
-    redirect("/admin/categories");
+    done("/admin/categories", "removed");
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("categories").delete().eq("id", id);
   if (error) throw new Error(friendlySaveError(error.message));
-  revalidateCatalogue();
-  redirect("/admin/categories");
+  done("/admin/categories", "removed");
 }
 
 export async function saveTestimonialAction(formData: FormData) {
@@ -293,14 +350,12 @@ export async function saveTestimonialAction(formData: FormData) {
     if (existing) testimonial.created_at = existing.created_at;
     store.testimonials = [...store.testimonials.filter((item) => item.id !== id), testimonial];
     await writeStore(store);
-    revalidateCatalogue();
-    redirect("/admin/testimonials");
+    done("/admin/testimonials", "saved");
   }
   const supabase = await requireSupabaseUser();
-  const { error } = await supabase.from("testimonials").upsert(testimonial);
+  const { error } = await supabase.from("testimonials").upsert(withoutCreatedAt(testimonial));
   if (error) throw new Error(friendlySaveError(error.message));
-  revalidateCatalogue();
-  redirect("/admin/testimonials");
+  done("/admin/testimonials", "saved");
 }
 
 export async function deleteTestimonialAction(formData: FormData) {
@@ -309,14 +364,12 @@ export async function deleteTestimonialAction(formData: FormData) {
     const store = await readStore();
     store.testimonials = store.testimonials.filter((item) => item.id !== id);
     await writeStore(store);
-    revalidateCatalogue();
-    redirect("/admin/testimonials");
+    done("/admin/testimonials", "removed");
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("testimonials").delete().eq("id", id);
   if (error) throw new Error(friendlySaveError(error.message));
-  revalidateCatalogue();
-  redirect("/admin/testimonials");
+  done("/admin/testimonials", "removed");
 }
 
 export async function saveSettingsAction(formData: FormData) {
@@ -339,14 +392,12 @@ export async function saveSettingsAction(formData: FormData) {
     const store = await readStore();
     store.settings = settings;
     await writeStore(store);
-    revalidateCatalogue();
-    redirect("/admin/settings");
+    done("/admin/settings", "saved");
   }
   const supabase = await requireSupabaseUser();
   const { error } = await supabase.from("site_settings").upsert(settings);
   if (error) throw new Error(friendlySaveError(error.message));
-  revalidateCatalogue();
-  redirect("/admin/settings");
+  done("/admin/settings", "saved");
 }
 
 export async function saveHeroImagesAction(formData: FormData) {
@@ -356,15 +407,31 @@ export async function saveHeroImagesAction(formData: FormData) {
     const store = await readStore();
     store.heroImages = items;
     await writeStore(store);
-    revalidateCatalogue();
-    redirect("/admin/homepage");
+    done("/admin/homepage", "saved");
   }
   const supabase = await requireSupabaseUser();
-  await supabase.from("hero_images").delete().gte("sort_order", 0);
-  if (items.length > 0) {
-    const { error } = await supabase.from("hero_images").insert(items);
-    if (error) throw new Error(friendlySaveError(error.message));
+  await upsertAndPrune(
+    supabase,
+    "hero_images",
+    items.map((item) => ({ ...item })),
+  );
+  done("/admin/homepage", "saved");
+}
+
+export async function saveGalleryImagesAction(formData: FormData) {
+  const payload = str(formData, "payload");
+  const items = JSON.parse(payload) as GalleryImage[];
+  if (!isSupabaseConfigured()) {
+    const store = await readStore();
+    store.galleryImages = items;
+    await writeStore(store);
+    done("/admin/gallery", "saved");
   }
-  revalidateCatalogue();
-  redirect("/admin/homepage");
+  const supabase = await requireSupabaseUser();
+  await upsertAndPrune(
+    supabase,
+    "gallery_images",
+    items.map((item) => ({ ...item })),
+  );
+  done("/admin/gallery", "saved");
 }

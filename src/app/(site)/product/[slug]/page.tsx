@@ -8,7 +8,6 @@ import { ProductGallery } from "@/components/site/ProductGallery";
 import { Reveal } from "@/components/site/Reveal";
 import {
   getProductBySlug,
-  getProducts,
   getRelatedProducts,
 } from "@/lib/data/queries";
 import { formatPrice } from "@/lib/format";
@@ -17,10 +16,7 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateStaticParams() {
-  const products = await getProducts();
-  return products.map((product) => ({ slug: product.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -65,6 +61,7 @@ export default async function ProductPage({ params }: Props) {
             <OrderButton
               productName={product.name}
               customMessage={product.whatsapp_message}
+              variant="outline"
               className="min-w-[180px]"
             />
           </div>

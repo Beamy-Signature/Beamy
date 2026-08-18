@@ -3,18 +3,13 @@ import { notFound } from "next/navigation";
 import { CatalogueGrid } from "@/components/site/CatalogueGrid";
 import { EmptyState } from "@/components/site/EmptyState";
 import { Reveal } from "@/components/site/Reveal";
-import { getCategories, getCollectionBySlug, getCollections, getProducts } from "@/lib/data/queries";
+import { getCategories, getCollectionBySlug, getProducts } from "@/lib/data/queries";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateStaticParams() {
-  const collections = await getCollections();
-  return collections
-    .filter((collection) => collection.slug !== "men" && collection.slug !== "women")
-    .map((collection) => ({ slug: collection.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;

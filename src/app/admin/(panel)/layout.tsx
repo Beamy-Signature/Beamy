@@ -1,8 +1,13 @@
 import { redirect } from "next/navigation";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { getAppTarget } from "@/lib/app-target";
+import { isAllowedAdminEmail } from "@/lib/admin/guard";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { friendlyAuthError } from "@/lib/friendly-error";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function AdminPanelLayout({
   children,
@@ -18,6 +23,12 @@ export default async function AdminPanelLayout({
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) redirect("/admin/login");
+    if (!isAllowedAdminEmail(user.email)) {
+      await supabase.auth.signOut();
+      redirect(
+        `/admin/login?error=${encodeURIComponent(friendlyAuthError("This account cannot open the catalogue."))}`,
+      );
+    }
     email = user.email ?? null;
   }
 

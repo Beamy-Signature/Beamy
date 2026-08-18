@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { CartButton } from "@/components/site/CartDrawer";
+import { useCart } from "@/components/site/CartProvider";
 import type { SiteSettings } from "@/lib/types";
 import { whatsappLink } from "@/lib/whatsapp";
 
@@ -20,6 +21,7 @@ const links = [
 export function Header({ settings }: { settings: SiteSettings }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { setOpen: setBagOpen } = useCart();
   const enquiry = whatsappLink(
     settings.whatsapp_number,
     "Hello BEAMY, I would like to make an enquiry.\n\n",
@@ -97,14 +99,17 @@ export function Header({ settings }: { settings: SiteSettings }) {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href="/cart"
-                onClick={() => setOpen(false)}
-                className="mobile-link font-serif text-3xl tracking-tight"
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  setBagOpen(true);
+                }}
+                className="mobile-link text-left font-serif text-3xl tracking-tight"
                 style={{ transitionDelay: open ? `${80 + links.length * 50}ms` : "0ms" }}
               >
                 Bag
-              </Link>
+              </button>
               <a
                 href={enquiry}
                 target="_blank"
